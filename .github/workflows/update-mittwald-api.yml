@@ -41,5 +41,5 @@ jobs:
           git commit -m "chore: update mittwald API"
           git push
           
-          git tag "v$VERSION"
+          git tag "$VERSION"
           git push --tags
