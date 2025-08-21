@@ -7,7 +7,7 @@ import {
 
 export class mittwaldApi implements ICredentialType {
     name = 'mittwaldApi';
-    displayName = 'mittwald API';
+    displayName = 'Mittwald API';
     documentationUrl = 'https://developer.mittwald.de/docs/v2/api/intro/';
     properties: INodeProperties[] = [
         {
