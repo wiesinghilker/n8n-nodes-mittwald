@@ -1,0 +1,45 @@
+name: Update mittwald API
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Download OpenAPI spec
+        run: |
+          wget -qO- https://api.mittwald.de/v2/openapi.json | jq '.' > nodes/mittwald/openapi.json
+      
+      - name: Check for changes
+        id: check
+        run: |
+          git diff --exit-code nodes/mittwald/openapi.json || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Bump version and commit
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          npm version patch --no-git-tag-version
+          VERSION=$(node -p "require('./package.json').version")
+          
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          
+          git add nodes/mittwald/openapi.json package.json
+          git commit -m "chore: update mittwald API"
+          git push
+          
+          git tag "v$VERSION"
+          git push --tags
