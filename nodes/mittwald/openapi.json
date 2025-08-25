@@ -18973,6 +18973,56 @@
         ]
       }
     },
+    "/v2/mail-addresses/{mailAddressId}/contract": {
+      "get": {
+        "operationId": "contract-get-detail-of-contract-by-mail-address",
+        "parameters": [
+          {
+            "example": "d3fe766e-1d34-40f0-9c27-611e3b654fca",
+            "in": "path",
+            "name": "mailAddressId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.contract.Contract"
+                }
+              }
+            },
+            "description": "Returns an active Contract for the given Mail Address."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Return the Contract for the given Mail Address.",
+        "tags": [
+          "Contract"
+        ]
+      }
+    },
     "/v2/projects/{projectId}/contract": {
       "get": {
         "operationId": "contract-get-detail-of-contract-by-project",
@@ -53448,56 +53498,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/mail-addresses/{mailAddressId}/contract": {
-      "get": {
-        "operationId": "contract-get-detail-of-contract-by-mail-address",
-        "parameters": [
-          {
-            "example": "d3fe766e-1d34-40f0-9c27-611e3b654fca",
-            "in": "path",
-            "name": "mailAddressId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.contract.Contract"
-                }
-              }
-            },
-            "description": "Returns an active Contract for the given Mail Address."
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Return the Contract for the given Mail Address.",
-        "tags": [
-          "Contract"
         ]
       }
     }
