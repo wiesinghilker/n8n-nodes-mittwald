@@ -12102,6 +12102,188 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.marketplace.ExtensionSecret": {
+        "properties": {
+          "secretId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "usableUntil": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "secretId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.marketplace.ContractPartner": {
+        "properties": {
+          "contractPartner": {
+            "properties": {
+              "address": {
+                "$ref": "#/components/schemas/de.mittwald.v1.commons.Address"
+              },
+              "company": {
+                "example": "mittwald",
+                "type": "string"
+              },
+              "email": {
+                "example": "a.lovelace@example.com",
+                "type": "string"
+              },
+              "firstName": {
+                "example": "Ada",
+                "type": "string"
+              },
+              "lastName": {
+                "example": "Lovelace",
+                "type": "string"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName",
+              "email",
+              "address"
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "extensionId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "extensionInstanceId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "parentCustomerId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "extensionInstanceId",
+          "extensionId",
+          "createdAt",
+          "parentCustomerId",
+          "contractPartner"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.marketplace.Contributor": {
+        "properties": {
+          "customerId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "descriptions": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.LocalizedDescription"
+          },
+          "email": {
+            "deprecated": true,
+            "type": "string"
+          },
+          "homepage": {
+            "format": "uri",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "imprint": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ContributorImprint"
+          },
+          "logoRefId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "deprecated": true,
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ContributorState"
+          },
+          "supportInformation": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/de.mittwald.v1.marketplace.SupportMeta"
+              },
+              {
+                "properties": {
+                  "inherited": {
+                    "description": "Whether the support information is inherited from the customer.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "inherited"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "url": {
+            "deprecated": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "state",
+          "name",
+          "supportInformation",
+          "email"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.marketplace.ContributorState": {
+        "enum": [
+          "enabled",
+          "disabled"
+        ],
+        "type": "string"
+      },
+      "de.mittwald.v1.marketplace.ContributorImprint": {
+        "oneOf": [
+          {
+            "properties": {
+              "text": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "type": "object"
+          },
+          {
+            "properties": {
+              "url": {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "url"
+            ],
+            "type": "object"
+          }
+        ]
+      },
       "de.mittwald.v1.marketplace.SubTitle": {
         "description": "A few words to promote your Extension.",
         "properties": {
@@ -12121,26 +12303,29 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.marketplace.ContributorState": {
-        "enum": [
-          "enabled",
-          "disabled"
-        ],
-        "type": "string"
-      },
-      "de.mittwald.v1.marketplace.ExtensionSecret": {
+      "de.mittwald.v1.marketplace.MonthlyPricingStrategy": {
+        "description": "A strategy for pricing that occurs monthly.",
         "properties": {
-          "secretId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "usableUntil": {
-            "format": "date-time",
+          "netPrice": {
+            "description": "The monthly price in Euro Cents before tax.",
+            "example": 500,
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "netPrice"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.marketplace.UrlFrontendFragment": {
+        "properties": {
+          "url": {
             "type": "string"
           }
         },
         "required": [
-          "secretId"
+          "url"
         ],
         "type": "object"
       },
@@ -12325,117 +12510,6 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.marketplace.UrlFrontendFragment": {
-        "properties": {
-          "url": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "url"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.marketplace.ContributorImprint": {
-        "oneOf": [
-          {
-            "properties": {
-              "text": {
-                "minLength": 1,
-                "type": "string"
-              }
-            },
-            "required": [
-              "text"
-            ],
-            "type": "object"
-          },
-          {
-            "properties": {
-              "url": {
-                "format": "uri",
-                "minLength": 1,
-                "type": "string"
-              }
-            },
-            "required": [
-              "url"
-            ],
-            "type": "object"
-          }
-        ]
-      },
-      "de.mittwald.v1.marketplace.MonthlyPricingStrategy": {
-        "description": "A strategy for pricing that occurs monthly.",
-        "properties": {
-          "netPrice": {
-            "description": "The monthly price in Euro Cents before tax.",
-            "example": 500,
-            "format": "int32",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "netPrice"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.marketplace.ContractPartner": {
-        "properties": {
-          "contractPartner": {
-            "properties": {
-              "address": {
-                "$ref": "#/components/schemas/de.mittwald.v1.commons.Address"
-              },
-              "company": {
-                "example": "mittwald",
-                "type": "string"
-              },
-              "email": {
-                "example": "a.lovelace@example.com",
-                "type": "string"
-              },
-              "firstName": {
-                "example": "Ada",
-                "type": "string"
-              },
-              "lastName": {
-                "example": "Lovelace",
-                "type": "string"
-              }
-            },
-            "required": [
-              "firstName",
-              "lastName",
-              "email",
-              "address"
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "extensionId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "extensionInstanceId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "parentCustomerId": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "extensionInstanceId",
-          "extensionId",
-          "createdAt",
-          "parentCustomerId",
-          "contractPartner"
-        ],
-        "type": "object"
-      },
       "de.mittwald.v1.marketplace.Extension": {
         "properties": {
           "assets": {
@@ -12590,77 +12664,56 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.marketplace.Contributor": {
+      "de.mittwald.v1.marketplace.LocalizedDescription": {
+        "description": "A few words about the introduction as a contributor",
         "properties": {
-          "customerId": {
-            "format": "uuid",
+          "de": {
+            "example": "Ich bin ein Contributor",
             "type": "string"
           },
-          "description": {
+          "en": {
+            "example": "I am a contributor",
             "type": "string"
+          }
+        },
+        "required": [
+          "de"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.marketplace.ExtensionHealth": {
+        "properties": {
+          "extensionInstances": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ExtensionInstanceHealth"
+            },
+            "type": "array"
           },
-          "descriptions": {
-            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.LocalizedDescription"
-          },
-          "email": {
-            "deprecated": true,
-            "type": "string"
-          },
-          "homepage": {
-            "format": "uri",
-            "type": "string"
+          "functional": {
+            "default": false,
+            "type": "boolean"
           },
           "id": {
             "format": "uuid",
             "type": "string"
           },
-          "imprint": {
-            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ContributorImprint"
-          },
-          "logoRefId": {
+          "inoperableReason": {
+            "example": "9 of 10 webhooks in the last hour were unsuccessful.",
             "type": "string"
           },
-          "name": {
-            "type": "string"
+          "published": {
+            "default": false,
+            "type": "boolean"
           },
-          "phone": {
-            "deprecated": true,
-            "type": "string"
-          },
-          "state": {
-            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ContributorState"
-          },
-          "supportInformation": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/de.mittwald.v1.marketplace.SupportMeta"
-              },
-              {
-                "properties": {
-                  "inherited": {
-                    "description": "Whether the support information is inherited from the customer.",
-                    "type": "boolean"
-                  }
-                },
-                "required": [
-                  "inherited"
-                ],
-                "type": "object"
-              }
-            ]
-          },
-          "url": {
-            "deprecated": true,
+          "withdrawalReason": {
             "type": "string"
           }
         },
         "required": [
           "id",
-          "customerId",
-          "state",
-          "name",
-          "supportInformation",
-          "email"
+          "functional",
+          "published",
+          "extensionInstances"
         ],
         "type": "object"
       },
@@ -12752,59 +12805,6 @@
           "contactPersonUserId",
           "contractOwner",
           "contributorNumber"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.marketplace.ExtensionHealth": {
-        "properties": {
-          "extensionInstances": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ExtensionInstanceHealth"
-            },
-            "type": "array"
-          },
-          "functional": {
-            "default": false,
-            "type": "boolean"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "inoperableReason": {
-            "example": "9 of 10 webhooks in the last hour were unsuccessful.",
-            "type": "string"
-          },
-          "published": {
-            "default": false,
-            "type": "boolean"
-          },
-          "withdrawalReason": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "functional",
-          "published",
-          "extensionInstances"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.marketplace.LocalizedDescription": {
-        "description": "A few words about the introduction as a contributor",
-        "properties": {
-          "de": {
-            "example": "Ich bin ein Contributor",
-            "type": "string"
-          },
-          "en": {
-            "example": "I am a contributor",
-            "type": "string"
-          }
-        },
-        "required": [
-          "de"
         ],
         "type": "object"
       },
