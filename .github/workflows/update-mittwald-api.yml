@@ -13,6 +13,10 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Use a PAT if provided so tag pushes trigger other workflows
+          token: ${{ secrets.RELEASE_PAT != '' && secrets.RELEASE_PAT || github.token }}
+          fetch-depth: 0
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
