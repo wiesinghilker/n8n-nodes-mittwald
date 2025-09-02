@@ -10,7 +10,7 @@
   },
   "tags": [
     {
-      "name": "Project",
+      "name": "test",
       "description": "The project API allows you to manage your projects, and also any kinds of user memberships concerning these projects."
     },
     {
