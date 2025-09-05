@@ -31459,6 +31459,54 @@
         ]
       }
     },
+    "/v2/dns-zones/{dnsZoneId}/zone-file": {
+      "get": {
+        "operationId": "dns-get-zone-file",
+        "description": "Returns a BIND-compliant DNS zone file per RFC 1035 for the specified dnsZoneId, including all sub zone information. Entering the dnsZoneId of a sub zone will result in an error.",
+        "parameters": [
+          {
+            "description": "ID of the DNSZone to get a zone file for.",
+            "in": "path",
+            "name": "dnsZoneId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Returns the zone file as plain text."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get a zone file for a DNSZone.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
     "/v2/projects/{projectId}/dns/zones": {
       "get": {
         "parameters": [
@@ -37476,6 +37524,27 @@
                   "REISSUE",
                   "CORRECTION",
                   "CANCELLATION"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "example": [
+              "PAID",
+              "OVERPAID"
+            ],
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "items": {
+                "enum": [
+                  "CONFIRMED",
+                  "PAID",
+                  "PARTIALLY_PAID",
+                  "OVERPAID"
                 ],
                 "type": "string"
               },
