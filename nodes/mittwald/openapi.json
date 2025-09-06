@@ -20012,6 +20012,16 @@
             }
           },
           {
+            "description": "Search Invoice by number or id",
+            "example": "RG7545",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "description": "The max count of resources to return in the list response.",
