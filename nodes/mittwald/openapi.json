@@ -11106,6 +11106,23 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.directus.EmailInbox": {
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.screenshot.Target": {
         "properties": {
           "domain": {
@@ -47790,6 +47807,13 @@
                     "description": "List of domains which should be transferred (when allDomains is not checked).",
                     "items": {
                       "$ref": "#/components/schemas/de.mittwald.v1.directus.Domain"
+                    },
+                    "type": "array"
+                  },
+                  "emailInboxes": {
+                    "description": "List of email inboxes which should be transferred.",
+                    "items": {
+                      "$ref": "#/components/schemas/de.mittwald.v1.directus.EmailInbox"
                     },
                     "type": "array"
                   },
