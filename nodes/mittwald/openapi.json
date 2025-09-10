@@ -5590,6 +5590,12 @@
           "extensionSubTitle": {
             "$ref": "#/components/schemas/de.mittwald.v1.marketplace.SubTitle"
           },
+          "frontendFragments": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/de.mittwald.v1.marketplace.FrontendFragment"
+            },
+            "type": "object"
+          },
           "id": {
             "format": "uuid",
             "type": "string"
@@ -7586,6 +7592,13 @@
               "name": {
                 "type": "string"
               },
+              "phoneNumbers": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
               "targetGroup": {
                 "items": {
                   "type": "string"
@@ -7604,7 +7617,8 @@
               "coreProduct",
               "websiteType",
               "companyType",
-              "city"
+              "city",
+              "phoneNumbers"
             ],
             "type": "object"
           }
@@ -33448,6 +33462,14 @@
           {
             "in": "query",
             "name": "searchTerm",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "anchor",
             "required": false,
             "schema": {
               "type": "string"
