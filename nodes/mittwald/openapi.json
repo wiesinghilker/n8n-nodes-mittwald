@@ -3035,9 +3035,6 @@
             "maxItems": 0,
             "type": "array"
           },
-          "internal": {
-            "type": "boolean"
-          },
           "messageContent": {
             "enum": [
               "relocation",
@@ -3069,7 +3066,6 @@
           "messageContent",
           "createdAt",
           "type",
-          "internal",
           "meta"
         ],
         "type": "object"
