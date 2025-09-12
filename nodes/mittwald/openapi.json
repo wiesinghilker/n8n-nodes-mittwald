@@ -558,7 +558,8 @@
           "installing",
           "upgrading",
           "ready",
-          "disabled"
+          "disabled",
+          "reconfiguring"
         ],
         "example": "ready",
         "type": "string"
@@ -1358,6 +1359,11 @@
             },
             "type": "array"
           },
+          "digest": {
+            "description": "The image digest.",
+            "example": "sha256:216aab5860821ba2eecad636722a6891e40a81791fbb61e2bd49bfc5aeeacdca",
+            "type": "string"
+          },
           "entrypoint": {
             "description": "Entrypoint of the container image.",
             "items": {
@@ -1424,7 +1430,8 @@
           "userId",
           "isUserRoot",
           "hasAiGeneratedData",
-          "isAiAvailable"
+          "isAiAvailable",
+          "digest"
         ],
         "type": "object"
       },
@@ -8244,6 +8251,30 @@
             "format": "idn-email",
             "type": "string"
           },
+          "archive": {
+            "properties": {
+              "active": {
+                "description": "shows if the mail-archive is enabled",
+                "type": "boolean"
+              },
+              "quota": {
+                "description": "maximum available mail-archive storage in bytes",
+                "format": "int64",
+                "type": "integer"
+              },
+              "usedBytes": {
+                "description": "current mail-archive usage in bytes",
+                "format": "int64",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "active",
+              "quota",
+              "usedBytes"
+            ],
+            "type": "object"
+          },
           "autoResponder": {
             "properties": {
               "active": {
@@ -8387,7 +8418,8 @@
           "updatedAt",
           "autoResponder",
           "isArchived",
-          "isBackupInProgress"
+          "isBackupInProgress",
+          "archive"
         ],
         "type": "object"
       },
@@ -10696,7 +10728,7 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.llmlocksmith.ContainerMeta": {
+      "de.mittwald.v1.aihosting.ContainerMeta": {
         "properties": {
           "containerId": {
             "type": "string"
@@ -10724,10 +10756,10 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.llmlocksmith.Licence": {
+      "de.mittwald.v1.aihosting.Licence": {
         "properties": {
           "containerMeta": {
-            "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.ContainerMeta"
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.ContainerMeta"
           },
           "customerId": {
             "type": "string"
@@ -10738,12 +10770,35 @@
             "type": "boolean"
           },
           "licenceId": {
+            "description": "Auto generated uuid to identify licences in requests.",
             "type": "string"
           },
           "licenceKey": {
+            "description": "The secret API key which is required for authentication with the LLM hosting.",
             "type": "string"
           },
+          "limit": {
+            "description": "The number of allowed requests per unit. Limits are shared across all licences within the same project.",
+            "properties": {
+              "allowedRequestsPerUnit": {
+                "type": "number"
+              },
+              "unit": {
+                "enum": [
+                  "minute",
+                  "hour"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "allowedRequestsPerUnit",
+              "unit"
+            ],
+            "type": "object"
+          },
           "models": {
+            "description": "An array of LLM model identifiers enabled for this licence.",
             "items": {
               "type": "string"
             },
@@ -10756,6 +10811,8 @@
             "type": "string"
           },
           "rateLimit": {
+            "deprecated": true,
+            "description": "Deprecated, please us limit.allowedRequestsPerUnit",
             "type": "number"
           }
         },
@@ -10765,11 +10822,12 @@
           "models",
           "name",
           "rateLimit",
-          "isBlocked"
+          "isBlocked",
+          "limit"
         ],
         "type": "object"
       },
-      "de.mittwald.v1.llmlocksmith.Model": {
+      "de.mittwald.v1.aihosting.Model": {
         "properties": {
           "displayName": {
             "type": "string"
@@ -18478,12 +18536,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract where the terminated ContractItem belongs to.",
-            "example": "f6bb2d44-e6be-46dc-96f7-9602a7177a75",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -18549,12 +18613,18 @@
         "operationId": "contract-terminate-contract-item",
         "parameters": [
           {
-            "example": "f6bb2d44-e6be-46dc-96f7-9602a7177a75",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -18647,12 +18717,18 @@
         "operationId": "contract-cancel-contract-tariff-change",
         "parameters": [
           {
-            "example": "154219e9-bf4a-4f41-9c72-0449a98db62f",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -18721,12 +18797,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract for which the Termination is to be cancelled. Only works for Contracts for which a\nTermination is stored.\n",
-            "example": "f6bb2d44-e6be-46dc-96f7-9602a7177a75",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -18781,12 +18863,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract to be terminated.",
-            "example": "f6bb2d44-e6be-46dc-96f7-9602a7177a75",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -18873,12 +18961,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract from which the BaseItem is to be issued.",
-            "example": "97cecfa0-2c3c-4272-a510-c775fcaade01",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -18973,12 +19067,18 @@
         "operationId": "contract-get-detail-of-contract-by-domain",
         "parameters": [
           {
-            "example": "0a6de990-b33f-4cf8-adba-025a26515657",
+            "examples": {
+              "shortId": {
+                "value": "my-domain.de"
+              },
+              "uuid": {
+                "value": "0a6de990-b33f-4cf8-adba-025a26515657"
+              }
+            },
             "in": "path",
             "name": "domainId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19023,7 +19123,14 @@
         "operationId": "contract-get-detail-of-contract-by-lead-fyndr",
         "parameters": [
           {
-            "example": "9daa3c39-3dac-414f-aa6b-7d0975a6d90e",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -19122,12 +19229,18 @@
         "operationId": "contract-get-detail-of-contract-by-project",
         "parameters": [
           {
-            "example": "0a6de990-b33f-4cf8-adba-025a26515657",
+            "examples": {
+              "shortId": {
+                "value": "p-pkrjw1"
+              },
+              "uuid": {
+                "value": "95e64f67-a49e-4446-968c-f74da2df3a9d"
+              }
+            },
             "in": "path",
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19172,12 +19285,18 @@
         "operationId": "contract-get-detail-of-contract-by-server",
         "parameters": [
           {
-            "example": "0a6de990-b33f-4cf8-adba-025a26515657",
+            "examples": {
+              "shortId": {
+                "value": "s-ttgn7c"
+              },
+              "uuid": {
+                "value": "173a25fe-5f53-45d4-adc1-9b4743aa4d57"
+              }
+            },
             "in": "path",
             "name": "serverId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19223,12 +19342,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract where the desired ContractItem belongs to.",
-            "example": "97cecfa0-2c3c-4272-a510-c775fcaade01",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -19285,12 +19410,18 @@
         "parameters": [
           {
             "description": "The uuid of the Contract to be returned.",
-            "example": "97cecfa0-2c3c-4272-a510-c775fcaade01",
+            "examples": {
+              "shortId": {
+                "value": "V1000000"
+              },
+              "uuid": {
+                "value": "7cecfa0-2c3c-4272-a510-c775fcaade01"
+              }
+            },
             "in": "path",
             "name": "contractId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19336,12 +19467,18 @@
         "parameters": [
           {
             "description": "The uuid of the Customer from whom all Contracts are to be returned.",
-            "example": "97cecfa0-2c3c-4272-a510-c775fcaade01",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -19711,12 +19848,18 @@
         "operationId": "contributor-get-billing-information",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19779,12 +19922,18 @@
         "operationId": "contributor-update-billing-information",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19855,12 +20004,18 @@
         "description": "Get the Stripe Billing Portal Link for a Customer.",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -19911,12 +20066,18 @@
         "description": "Get the Stripe Dashboard Link for a Contributor.",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -20244,12 +20405,18 @@
         "description": "List all invoices on behalf of a contributor.",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -33257,12 +33424,18 @@
         "description": "The OnboardingProcess is needed to publish paid extensions.",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -34389,7 +34562,14 @@
         "operationId": "extension-get-customer-extension-instance-orders",
         "parameters": [
           {
-            "example": "fbc49def-2e87-4874-8e30-a0dabe59e008",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -34723,7 +34903,14 @@
         "operationId": "extension-get-project-extension-instance-orders",
         "parameters": [
           {
-            "example": "a74956b5-cdc2-4752-81b5-e7ec7bf70102",
+            "examples": {
+              "shortId": {
+                "value": "p-pkrjw1"
+              },
+              "uuid": {
+                "value": "95e64f67-a49e-4446-968c-f74da2df3a9d"
+              }
+            },
             "in": "path",
             "name": "projectId",
             "required": true,
@@ -35487,6 +35674,11 @@
                         "description": "The customer the extension should be booked for. Either customerId or projectId is required.",
                         "format": "uuid",
                         "type": "string"
+                      },
+                      "variantKey": {
+                        "description": "The Variant Key of the selected Variant of the Extension. This is only required if the Extension has multiple Variants.",
+                        "example": "default",
+                        "type": "string"
                       }
                     },
                     "required": [
@@ -35506,6 +35698,11 @@
                       "projectId": {
                         "description": "The project the extension should be installed in. Either customerId or projectId is required.",
                         "format": "uuid",
+                        "type": "string"
+                      },
+                      "variantKey": {
+                        "description": "The Variant Key of the selected Variant of the Extension. This is only required if the Extension has multiple Variants.",
+                        "example": "default",
                         "type": "string"
                       }
                     },
@@ -36155,12 +36352,18 @@
             }
           },
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1900000"
+              },
+              "uuid": {
+                "value": "72830cb2-b5b9-4f86-b6f5-e12e13787af6"
+              }
+            },
             "in": "path",
             "name": "contributorId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -41379,6 +41582,15 @@
             }
           },
           {
+            "description": "Whether the MailAddress has a mail-archive.",
+            "in": "query",
+            "name": "mailArchive",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "description": "The max count of resources to return in the list response.",
@@ -41624,6 +41836,15 @@
             "description": "Whether the MailAddress has an active auto responder.",
             "in": "query",
             "name": "autoResponder",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether the MailAddress has a mail-archive.",
+            "in": "query",
+            "name": "mailArchive",
             "required": false,
             "schema": {
               "type": "boolean"
@@ -42800,12 +43021,18 @@
         "operationId": "marketplace-customer-get-payment-method",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -42865,12 +43092,18 @@
         "operationId": "marketplace-customer-update-payment-method",
         "parameters": [
           {
-            "example": "907a24e9-0723-4566-b584-86578419e983",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -42940,7 +43173,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.Model"
+                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Model"
                   },
                   "type": "array"
                 }
@@ -44965,7 +45198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.Licence"
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Licence"
                 }
               }
             },
@@ -45016,7 +45249,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.Licence"
+                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Licence"
                   },
                   "type": "array"
                 }
@@ -46575,7 +46808,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.Licence"
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Licence"
                 }
               }
             },
@@ -46647,7 +46880,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.llmlocksmith.Licence"
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Licence"
                 }
               }
             },
@@ -54253,6 +54486,58 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
+        ]
+      }
+    },
+    "/v2/mail-addresses/{mailAddressId}/mail-archive": {
+      "delete": {
+        "operationId": "mail-disable-mail-archive",
+        "parameters": [
+          {
+            "description": "ID of the MailAddress to disable a mail-archive for.",
+            "in": "path",
+            "name": "mailAddressId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Disable the mail-archive of a MailAddress.",
+        "tags": [
+          "Mail"
         ]
       }
     }
