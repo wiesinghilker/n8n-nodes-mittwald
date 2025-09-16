@@ -5610,6 +5610,10 @@
           "pendingRemoval": {
             "default": false,
             "type": "boolean"
+          },
+          "variantKey": {
+            "example": "default",
+            "type": "string"
           }
         },
         "required": [
@@ -12916,6 +12920,58 @@
           "storageDesc"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.order.MailArchiveOrder": {
+        "properties": {
+          "mailAddressId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "syncExistingMails": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "mailAddressId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.MailArchiveOrderPreview": {
+        "properties": {
+          "mailAddressId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "syncExistingMails": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "mailAddressId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.MailArchiveOrderPreviewResponse": {
+        "properties": {
+          "feePrice": {
+            "example": 199,
+            "type": "number"
+          },
+          "recurringPrice": {
+            "example": 350,
+            "type": "number"
+          },
+          "totalPrice": {
+            "example": 549,
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalPrice",
+          "recurringPrice",
+          "feePrice"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -33530,6 +33586,9 @@
                   "extensionId": {
                     "format": "uuid",
                     "type": "string"
+                  },
+                  "variantKey": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -37480,12 +37539,18 @@
         "operationId": "invoice-detail",
         "parameters": [
           {
-            "example": "154219e9-bf4a-4f41-9c72-0449a98db62f",
+            "examples": {
+              "shortId": {
+                "value": "RG200871"
+              },
+              "uuid": {
+                "value": "6d70791c-78f5-4f6d-9c83-3dad18e95c66"
+              }
+            },
             "in": "path",
             "name": "invoiceId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -37530,7 +37595,14 @@
         "operationId": "invoice-get-detail-of-invoice-settings",
         "parameters": [
           {
-            "example": "edefeee4-e8e9-4e2d-ab95-9a2eb6104cfb",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -37577,7 +37649,14 @@
         "operationId": "invoice-update-invoice-settings",
         "parameters": [
           {
-            "example": "edefeee4-e8e9-4e2d-ab95-9a2eb6104cfb",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -37677,7 +37756,14 @@
         "operationId": "invoice-get-file-access-token",
         "parameters": [
           {
-            "example": "edefeee4-e8e9-4e2d-ab95-9a2eb6104cfb",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -37686,12 +37772,18 @@
             }
           },
           {
-            "example": "154219e9-bf4a-4f41-9c72-0449a98db62f",
+            "examples": {
+              "shortId": {
+                "value": "RG200871"
+              },
+              "uuid": {
+                "value": "6d70791c-78f5-4f6d-9c83-3dad18e95c66"
+              }
+            },
             "in": "path",
             "name": "invoiceId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -37749,7 +37841,14 @@
         "operationId": "invoice-list-customer-invoices",
         "parameters": [
           {
-            "example": "ac3c8bbe-4c44-4f34-b6c7-1e6af48c3a7c",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -43771,6 +43870,9 @@
                       },
                       {
                         "$ref": "#/components/schemas/de.mittwald.v1.order.LeadFyndrOrder"
+                      },
+                      {
+                        "$ref": "#/components/schemas/de.mittwald.v1.order.MailArchiveOrder"
                       }
                     ]
                   },
@@ -43780,7 +43882,8 @@
                       "projectHosting",
                       "server",
                       "externalCertificate",
-                      "leadFyndr"
+                      "leadFyndr",
+                      "mailArchive"
                     ],
                     "example": "projectHosting",
                     "type": "string"
@@ -44019,12 +44122,18 @@
         "description": "Get details of a single Order, User must have access to the Order/Customer.",
         "parameters": [
           {
-            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "examples": {
+              "shortId": {
+                "value": "1234567"
+              },
+              "uuid": {
+                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
+              }
+            },
             "in": "path",
             "name": "orderId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -44064,7 +44173,14 @@
         "description": "The list of Orders of a Customer the User has access to, can be filtered by orderStatus, articleTemplate and count.",
         "parameters": [
           {
-            "example": "154219e9-bf4a-4f41-9c72-0449a98db62f",
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "customerId",
             "required": true,
@@ -44179,12 +44295,18 @@
         "description": "The list of Order of a Project the User has access to, can be filtered by orderStatus, articleTemplate and count.",
         "parameters": [
           {
-            "example": "e7c4b2e6-e38f-4c9b-8583-08bd627ff4d8",
+            "examples": {
+              "shortId": {
+                "value": "p-pkrjw1"
+              },
+              "uuid": {
+                "value": "95e64f67-a49e-4446-968c-f74da2df3a9d"
+              }
+            },
             "in": "path",
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -44313,6 +44435,9 @@
                       },
                       {
                         "$ref": "#/components/schemas/de.mittwald.v1.order.LeadFyndrOrderPreview"
+                      },
+                      {
+                        "$ref": "#/components/schemas/de.mittwald.v1.order.MailArchiveOrderPreview"
                       }
                     ]
                   },
@@ -44322,7 +44447,8 @@
                       "projectHosting",
                       "server",
                       "externalCertificate",
-                      "leadFyndr"
+                      "leadFyndr",
+                      "mailArchive"
                     ],
                     "type": "string"
                   }
@@ -44351,6 +44477,9 @@
                     },
                     {
                       "$ref": "#/components/schemas/de.mittwald.v1.order.LeadFyndrOrderPreviewResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/de.mittwald.v1.order.MailArchiveOrderPreviewResponse"
                     }
                   ]
                 }
