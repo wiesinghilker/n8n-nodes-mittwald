@@ -9756,6 +9756,58 @@
         },
         "type": "object"
       },
+      "de.mittwald.v1.order.MailArchiveOrderPreviewResponse": {
+        "properties": {
+          "feePrice": {
+            "example": 199,
+            "type": "number"
+          },
+          "recurringPrice": {
+            "example": 350,
+            "type": "number"
+          },
+          "totalPrice": {
+            "example": 549,
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalPrice",
+          "recurringPrice",
+          "feePrice"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.MailArchiveOrderPreview": {
+        "properties": {
+          "mailAddressId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "syncExistingMails": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "mailAddressId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.MailArchiveOrder": {
+        "properties": {
+          "mailAddressId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "syncExistingMails": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "mailAddressId"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.order.OrderItem": {
         "properties": {
           "addons": {
@@ -12920,58 +12972,6 @@
           "storageDesc"
         ],
         "type": "string"
-      },
-      "de.mittwald.v1.order.MailArchiveOrder": {
-        "properties": {
-          "mailAddressId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "syncExistingMails": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "mailAddressId"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.order.MailArchiveOrderPreview": {
-        "properties": {
-          "mailAddressId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "syncExistingMails": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "mailAddressId"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.order.MailArchiveOrderPreviewResponse": {
-        "properties": {
-          "feePrice": {
-            "example": 199,
-            "type": "number"
-          },
-          "recurringPrice": {
-            "example": 350,
-            "type": "number"
-          },
-          "totalPrice": {
-            "example": 549,
-            "type": "number"
-          }
-        },
-        "required": [
-          "totalPrice",
-          "recurringPrice",
-          "feePrice"
-        ],
-        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -42474,6 +42474,58 @@
         ]
       }
     },
+    "/v2/mail-addresses/{mailAddressId}/mail-archive": {
+      "delete": {
+        "operationId": "mail-disable-mail-archive",
+        "parameters": [
+          {
+            "description": "ID of the MailAddress to disable a mail-archive for.",
+            "in": "path",
+            "name": "mailAddressId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Disable the mail-archive of a MailAddress.",
+        "tags": [
+          "Mail"
+        ]
+      }
+    },
     "/v2/mail-addresses/{mailAddressId}/backups": {
       "get": {
         "operationId": "mail-list-backups-for-mail-address",
@@ -54615,58 +54667,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/mail-addresses/{mailAddressId}/mail-archive": {
-      "delete": {
-        "operationId": "mail-disable-mail-archive",
-        "parameters": [
-          {
-            "description": "ID of the MailAddress to disable a mail-archive for.",
-            "in": "path",
-            "name": "mailAddressId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "503": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Disable the mail-archive of a MailAddress.",
-        "tags": [
-          "Mail"
         ]
       }
     }
