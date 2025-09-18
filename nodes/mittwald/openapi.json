@@ -697,6 +697,12 @@
             },
             "type": "array"
           },
+          "defaultCronjobs": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.app.DefaultCronjob"
+            },
+            "type": "array"
+          },
           "docRoot": {
             "type": "string"
           },
@@ -757,6 +763,23 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.app.CronjobCommand": {
+        "properties": {
+          "interpreterTemplate": {
+            "example": "bash",
+            "type": "string"
+          },
+          "parametersTemplate": {
+            "example": "-c",
+            "type": "string"
+          },
+          "pathTemplate": {
+            "example": "/bin/bash",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "de.mittwald.v1.app.DatabaseDependency": {
         "description": "A DatabaseDependency is a generic description of need for a database, used by AppVersions.",
         "properties": {
@@ -784,6 +807,41 @@
           "version",
           "description",
           "kind"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.app.DefaultCronjob": {
+        "properties": {
+          "active": {
+            "example": true,
+            "type": "boolean"
+          },
+          "command": {
+            "$ref": "#/components/schemas/de.mittwald.v1.app.CronjobCommand"
+          },
+          "description": {
+            "example": "Beschreibung des Cronjobs",
+            "type": "string"
+          },
+          "interval": {
+            "example": "0 5 * * *",
+            "type": "string"
+          },
+          "timeout": {
+            "example": 300,
+            "format": "int32",
+            "type": "integer"
+          },
+          "urlTemplate": {
+            "example": "https://example.com/cronjob",
+            "type": "string"
+          }
+        },
+        "required": [
+          "interval",
+          "active",
+          "description",
+          "timeout"
         ],
         "type": "object"
       },
@@ -35233,35 +35291,6 @@
     "/v2/contributors": {
       "get": {
         "operationId": "extension-list-contributors",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "default": 1000,
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "skip",
-            "required": false,
-            "schema": {
-              "default": 0,
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "type": "integer"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "content": {
@@ -35274,7 +35303,33 @@
                 }
               }
             },
-            "description": "OK"
+            "description": "A List of Contributors within the mStudio.",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
@@ -35287,6 +35342,65 @@
         "summary": "List Contributors.",
         "tags": [
           "Marketplace"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the result by this field.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name"
+              ],
+              "default": "name"
+            },
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Should the result be sorted ascending or descending? Default ascending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "required": false
+          }
         ]
       }
     },
