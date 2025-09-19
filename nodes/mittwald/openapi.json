@@ -14455,6 +14455,9 @@
                   "description": {
                     "type": "string"
                   },
+                  "installationPath": {
+                    "type": "string"
+                  },
                   "updatePolicy": {
                     "$ref": "#/components/schemas/de.mittwald.v1.app.AppUpdatePolicy"
                   },
@@ -14645,6 +14648,9 @@
                     "type": "string"
                   },
                   "description": {
+                    "type": "string"
+                  },
+                  "installationPath": {
                     "type": "string"
                   },
                   "updatePolicy": {
@@ -15379,6 +15385,9 @@
                   "description": {
                     "type": "string"
                   },
+                  "installationPath": {
+                    "type": "string"
+                  },
                   "targetProjectId": {
                     "format": "uuid",
                     "type": "string"
@@ -15435,6 +15444,9 @@
               "schema": {
                 "properties": {
                   "description": {
+                    "type": "string"
+                  },
+                  "installationPath": {
                     "type": "string"
                   },
                   "targetProjectId": {
