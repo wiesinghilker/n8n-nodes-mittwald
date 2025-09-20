@@ -5274,6 +5274,7 @@
         ]
       },
       "de.mittwald.v1.marketplace.ContributorState": {
+        "deprecated": true,
         "enum": [
           "enabled",
           "disabled"
@@ -5316,6 +5317,7 @@
             "$ref": "#/components/schemas/de.mittwald.v1.marketplace.DetailedDescriptions"
           },
           "disabled": {
+            "deprecated": true,
             "type": "boolean"
           },
           "externalFrontends": {
@@ -5960,12 +5962,20 @@
           "url": {
             "deprecated": true,
             "type": "string"
+          },
+          "verificationRequested": {
+            "type": "boolean"
+          },
+          "verified": {
+            "type": "boolean"
           }
         },
         "required": [
           "id",
           "customerId",
           "state",
+          "verified",
+          "verificationRequested",
           "name",
           "nameInherited",
           "supportInformation",
@@ -6007,6 +6017,7 @@
             "$ref": "#/components/schemas/de.mittwald.v1.marketplace.DetailedDescriptions"
           },
           "disabled": {
+            "deprecated": true,
             "type": "boolean"
           },
           "externalFrontends": {
@@ -6093,6 +6104,7 @@
             "type": "array"
           },
           "state": {
+            "deprecated": true,
             "description": "deprecated",
             "enum": [
               "enabled",
@@ -54793,6 +54805,44 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
+        ]
+      }
+    },
+    "/v2/contributors/{contributorId}/verification-process": {
+      "post": {
+        "operationId": "contributor-request-verification",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contributorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The verification process has been started."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Start the verification process of a contributor.",
+        "tags": [
+          "Marketplace"
         ]
       }
     }
