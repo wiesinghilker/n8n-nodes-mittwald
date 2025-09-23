@@ -20882,6 +20882,44 @@
         ]
       }
     },
+    "/v2/contributors/{contributorId}/verification-process": {
+      "post": {
+        "operationId": "contributor-request-verification",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contributorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The verification process has been started."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Start the verification process of a contributor.",
+        "tags": [
+          "Marketplace"
+        ]
+      }
+    },
     "/v2/contributors/{contributorId}/extensions/{extensionId}/extension-instances/{extensionInstanceId}/secret": {
       "put": {
         "operationId": "contributor-rotate-secret-for-extension-instance",
@@ -37326,6 +37364,16 @@
             "required": false,
             "schema": {
               "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Substring of the hostnames to be retrieved.",
+            "in": "query",
+            "name": "hostnameSubstring",
+            "required": false,
+            "schema": {
+              "pattern": "^[a-zA-Z0-9\\-\\.äöüÄÖÜß]{3,253}$",
               "type": "string"
             }
           },
@@ -54805,44 +54853,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/contributors/{contributorId}/verification-process": {
-      "post": {
-        "operationId": "contributor-request-verification",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contributorId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "The verification process has been started."
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Start the verification process of a contributor.",
-        "tags": [
-          "Marketplace"
         ]
       }
     }
