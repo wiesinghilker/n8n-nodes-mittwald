@@ -44155,6 +44155,20 @@
           "400": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
           },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "error": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
           },
