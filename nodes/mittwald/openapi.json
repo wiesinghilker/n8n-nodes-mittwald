@@ -778,6 +778,10 @@
             "type": "string"
           }
         },
+        "required": [
+          "interpreterTemplate",
+          "pathTemplate"
+        ],
         "type": "object"
       },
       "de.mittwald.v1.app.DatabaseDependency": {
