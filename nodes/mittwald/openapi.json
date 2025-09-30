@@ -3561,6 +3561,9 @@
             "format": "email",
             "type": "string"
           },
+          "failedExecutionAlertThreshold": {
+            "type": "integer"
+          },
           "id": {
             "format": "uuid",
             "type": "string"
@@ -3721,6 +3724,10 @@
           "email": {
             "format": "email",
             "type": "string"
+          },
+          "failedExecutionAlertThreshold": {
+            "minimum": 0,
+            "type": "integer"
           },
           "interval": {
             "example": "*/5 * * * *",
@@ -22492,6 +22499,10 @@
                     "format": "email",
                     "type": "string"
                   },
+                  "failedExecutionAlertThreshold": {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
                   "interval": {
                     "example": "*/5 * * * *",
                     "type": "string"
@@ -37348,7 +37359,7 @@
             "description": "ID of the Project to list Ingresses for.",
             "examples": {
               "shortId": {
-                "value": "p-ab1cd2"
+                "value": "p-XXXXXX"
               },
               "uuid": {
                 "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
@@ -37377,7 +37388,24 @@
             "name": "hostnameSubstring",
             "required": false,
             "schema": {
-              "pattern": "^[a-zA-Z0-9\\-\\.äöüÄÖÜß]{3,253}$",
+              "maxLength": 253,
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the AppInstallation to list Ingresses for.",
+            "examples": {
+              "shortId": {
+                "value": "a-XXXXXX"
+              },
+              "uuid": {
+                "value": "e1a72f92-004d-4688-a399-4639fcce1cdf"
+              }
+            },
+            "in": "query",
+            "name": "appInstallationId",
+            "required": false,
+            "schema": {
               "type": "string"
             }
           },
