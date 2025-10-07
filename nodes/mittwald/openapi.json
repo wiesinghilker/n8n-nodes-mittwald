@@ -3562,6 +3562,7 @@
             "type": "string"
           },
           "failedExecutionAlertThreshold": {
+            "minimum": 1,
             "type": "integer"
           },
           "id": {
@@ -3607,7 +3608,8 @@
           "updatedAt",
           "description",
           "destination",
-          "timeout"
+          "timeout",
+          "failedExecutionAlertThreshold"
         ],
         "type": "object"
       },
@@ -3726,7 +3728,7 @@
             "type": "string"
           },
           "failedExecutionAlertThreshold": {
-            "minimum": 0,
+            "minimum": 1,
             "type": "integer"
           },
           "interval": {
