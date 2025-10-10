@@ -591,6 +591,10 @@
           "customDocumentRoot": {
             "type": "string"
           },
+          "deletionRequested": {
+            "default": false,
+            "type": "boolean"
+          },
           "description": {
             "type": "string"
           },
@@ -6188,6 +6192,10 @@
             "description": {
               "type": "string"
             },
+            "isBookingStopped": {
+              "example": "If a variant is no longer bookable the existing extension instances will not be removed but no new ones can be created.",
+              "type": "boolean"
+            },
             "key": {
               "type": "string"
             },
@@ -6201,7 +6209,8 @@
           },
           "required": [
             "key",
-            "priceInCents"
+            "priceInCents",
+            "isBookingStopped"
           ],
           "type": "object"
         },
@@ -20990,6 +20999,42 @@
           }
         ],
         "summary": "Start the verification process of a contributor.",
+        "tags": [
+          "Marketplace"
+        ]
+      },
+      "delete": {
+        "operationId": "contributor-cancel-verification",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contributorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The verification process has been cancelled."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Cancel the verification-process of a contributor.",
         "tags": [
           "Marketplace"
         ]
