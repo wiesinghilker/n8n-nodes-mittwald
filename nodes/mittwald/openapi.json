@@ -2371,6 +2371,10 @@
             "description": "Indicates whether the User is allowed to cancel the Termination.",
             "type": "boolean"
           },
+          "explanation": {
+            "example": "Not needed anymore",
+            "type": "string"
+          },
           "reason": {
             "example": "Not needed anymore",
             "type": "string"
@@ -7906,6 +7910,64 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.leadfyndr.LeadsExport": {
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "exportId": {
+            "type": "string"
+          },
+          "exportedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "exportedBy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.leadfyndr.LeadsExportExporter"
+          },
+          "leadCount": {
+            "description": "The number of leads included in the export.",
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exportId",
+          "customerId",
+          "exportedAt",
+          "leadCount"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.leadfyndr.LeadsExportExporter": {
+        "properties": {
+          "avatarRefId": {
+            "type": "string"
+          },
+          "person": {
+            "properties": {
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "firstName",
+              "lastName"
+            ],
+            "type": "object"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.leadfyndr.Lighthouse": {
         "properties": {
           "accessibility": {
@@ -13069,64 +13131,6 @@
         ],
         "type": "string"
       },
-      "de.mittwald.v1.leadfyndr.LeadsExport": {
-        "properties": {
-          "customerId": {
-            "type": "string"
-          },
-          "exportId": {
-            "type": "string"
-          },
-          "exportedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "exportedBy": {
-            "$ref": "#/components/schemas/de.mittwald.v1.leadfyndr.LeadsExportExporter"
-          },
-          "leadCount": {
-            "description": "The number of leads included in the export.",
-            "format": "int32",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "exportId",
-          "customerId",
-          "exportedAt",
-          "leadCount"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.leadfyndr.LeadsExportExporter": {
-        "properties": {
-          "avatarRefId": {
-            "type": "string"
-          },
-          "person": {
-            "properties": {
-              "firstName": {
-                "type": "string"
-              },
-              "lastName": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "firstName",
-              "lastName"
-            ],
-            "type": "object"
-          },
-          "userId": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "userId"
-        ],
-        "type": "object"
-      },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
         "properties": {
@@ -18038,6 +18042,135 @@
         ]
       }
     },
+    "/v2/stacks/{stackId}/volumes": {
+      "get": {
+        "operationId": "container-list-stack-volumes",
+        "parameters": [
+          {
+            "description": "ID of the Stack to list Volumes for.",
+            "in": "path",
+            "name": "stackId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Search term to list Volumes for. The field name is searchable.",
+            "in": "query",
+            "name": "searchTerm",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sorts the list with given order.",
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "$ref": "#/components/schemas/de.mittwald.v1.container.VolumeSortOrder"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "default": 1000,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.container.VolumeResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List Volumes belonging to a Stack.",
+        "tags": [
+          "Container"
+        ]
+      }
+    },
     "/v2/projects/{projectId}/stacks": {
       "get": {
         "operationId": "container-list-stacks",
@@ -18896,6 +19029,10 @@
                       "format": "uuid",
                       "type": "string"
                     },
+                    "explanation": {
+                      "example": "I consolidated multiple servers into one instance to reduce overhead",
+                      "type": "string"
+                    },
                     "reason": {
                       "example": "Server wird nicht mehr benötigt",
                       "type": "string"
@@ -19106,6 +19243,10 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "explanation": {
+                    "example": "The website for my temporary project is no longer needed",
+                    "type": "string"
+                  },
                   "reason": {
                     "description": "A reason for the termination can be given as plain text.",
                     "example": "Projekt wird nicht mehr benötigt",
@@ -19130,6 +19271,10 @@
                   "properties": {
                     "contractId": {
                       "format": "uuid",
+                      "type": "string"
+                    },
+                    "explanation": {
+                      "example": "The website for my temporary project is no longer needed",
                       "type": "string"
                     },
                     "itemsScheduledForTermination": {
@@ -38684,6 +38829,269 @@
         ]
       }
     },
+    "/experimental-v2/customers/{customerId}/unlocked-leads-export": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "exportAllLeads": {
+                    "description": "Whether to export all leads or only not already exported leads.",
+                    "type": "boolean"
+                  },
+                  "fieldKeys": {
+                    "description": "The fields to include in the export.",
+                    "items": {
+                      "enum": [
+                        "domain",
+                        "potential",
+                        "performance",
+                        "generalLook",
+                        "companyName",
+                        "emails",
+                        "phoneNumbers",
+                        "address",
+                        "employeeCount",
+                        "revenue",
+                        "a-record",
+                        "nameserver",
+                        "mailserver",
+                        "techStack"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "fieldKeys",
+                  "exportAllLeads"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create an export of unlocked leads for the given customerId.",
+        "tags": [
+          "LeadFyndr"
+        ],
+        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-export instead.",
+        "deprecated": true
+      }
+    },
+    "/v2-experimental/customers/{customerId}/unlocked-leads-export": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "exportAllLeads": {
+                    "description": "Whether to export all leads or only not already exported leads.",
+                    "type": "boolean"
+                  },
+                  "fieldKeys": {
+                    "description": "The fields to include in the export.",
+                    "items": {
+                      "enum": [
+                        "domain",
+                        "potential",
+                        "performance",
+                        "generalLook",
+                        "companyName",
+                        "emails",
+                        "phoneNumbers",
+                        "address",
+                        "employeeCount",
+                        "revenue",
+                        "a-record",
+                        "nameserver",
+                        "mailserver",
+                        "techStack"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "fieldKeys",
+                  "exportAllLeads"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create an export of unlocked leads for the given customerId.",
+        "tags": [
+          "LeadFyndr"
+        ],
+        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-export instead.",
+        "deprecated": true
+      }
+    },
+    "/v2/customers/{customerId}/unlocked-leads-export": {
+      "post": {
+        "operationId": "leadfyndr-create-leads-export",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "exportAllLeads": {
+                    "description": "Whether to export all leads or only not already exported leads.",
+                    "type": "boolean"
+                  },
+                  "fieldKeys": {
+                    "description": "The fields to include in the export.",
+                    "items": {
+                      "enum": [
+                        "domain",
+                        "potential",
+                        "performance",
+                        "generalLook",
+                        "companyName",
+                        "emails",
+                        "phoneNumbers",
+                        "address",
+                        "employeeCount",
+                        "revenue",
+                        "a-record",
+                        "nameserver",
+                        "mailserver",
+                        "techStack"
+                      ],
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "fieldKeys",
+                  "exportAllLeads"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "contentBase64": {
+                      "description": "The base64 encoded csv content of the export.",
+                      "type": "string"
+                    },
+                    "exportId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "exportId",
+                    "contentBase64"
+                  ],
+                  "type": "object"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "description": "The csv content of the export.",
+                  "type": "string"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Create an export of unlocked leads for the given customerId.",
+        "tags": [
+          "LeadFyndr"
+        ]
+      }
+    },
     "/experimental-v2/cities": {
       "get": {
         "parameters": [
@@ -39172,6 +39580,318 @@
           }
         },
         "summary": "Get a simple lead. Use the unlocked route for more detail leads.",
+        "tags": [
+          "LeadFyndr"
+        ]
+      }
+    },
+    "/experimental-v2/customers/{customerId}/unlocked-leads-exports": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the result by this field.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "exportedAt"
+              ],
+              "default": "exportedAt"
+            },
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Should the result be sorted ascending or descending? Default ascending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get unlocked leads export history for the given customerId.",
+        "tags": [
+          "LeadFyndr"
+        ],
+        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-exports instead.",
+        "deprecated": true
+      }
+    },
+    "/v2-experimental/customers/{customerId}/unlocked-leads-exports": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the result by this field.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "exportedAt"
+              ],
+              "default": "exportedAt"
+            },
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Should the result be sorted ascending or descending? Default ascending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get unlocked leads export history for the given customerId.",
+        "tags": [
+          "LeadFyndr"
+        ],
+        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-exports instead.",
+        "deprecated": true
+      }
+    },
+    "/v2/customers/{customerId}/unlocked-leads-exports": {
+      "get": {
+        "operationId": "leadfyndr-get-leads-export-history",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort the result by this field.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "exportedAt"
+              ],
+              "default": "exportedAt"
+            },
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Should the result be sorted ascending or descending? Default ascending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.leadfyndr.LeadsExport"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "A list of unlocked leads exports.",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get unlocked leads export history for the given customerId.",
         "tags": [
           "LeadFyndr"
         ]
@@ -55166,710 +55886,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/experimental-v2/customers/{customerId}/unlocked-leads-exports": {
-      "get": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The max count of resources to return in the list response.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "Number of items to skip. Should be multiple of `limit`.",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "required": false
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort the result by this field.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "exportedAt"
-              ],
-              "default": "exportedAt"
-            },
-            "required": false
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Should the result be sorted ascending or descending? Default ascending.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "default": "desc"
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get unlocked leads export history for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ],
-        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-exports instead.",
-        "deprecated": true
-      }
-    },
-    "/v2-experimental/customers/{customerId}/unlocked-leads-exports": {
-      "get": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The max count of resources to return in the list response.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "Number of items to skip. Should be multiple of `limit`.",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "required": false
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort the result by this field.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "exportedAt"
-              ],
-              "default": "exportedAt"
-            },
-            "required": false
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Should the result be sorted ascending or descending? Default ascending.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "default": "desc"
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Get unlocked leads export history for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ],
-        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-exports instead.",
-        "deprecated": true
-      }
-    },
-    "/v2/customers/{customerId}/unlocked-leads-exports": {
-      "get": {
-        "operationId": "leadfyndr-get-leads-export-history",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The max count of resources to return in the list response.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "Number of items to skip. Should be multiple of `limit`.",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "required": false
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort the result by this field.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "exportedAt"
-              ],
-              "default": "exportedAt"
-            },
-            "required": false
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Should the result be sorted ascending or descending? Default ascending.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "default": "desc"
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.leadfyndr.LeadsExport"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "A list of unlocked leads exports.",
-            "headers": {
-              "X-Pagination-Limit": {
-                "description": "The limit used to select the resources for the response",
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "X-Pagination-Skip": {
-                "description": "The number of skipped items",
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "X-Pagination-Page": {
-                "description": "The calculate page of the list response. Refer to parameters to learn more.",
-                "schema": {
-                  "type": "number"
-                }
-              },
-              "X-Pagination-TotalCount": {
-                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
-                "schema": {
-                  "type": "integer"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get unlocked leads export history for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ]
-      }
-    },
-    "/experimental-v2/customers/{customerId}/unlocked-leads-export": {
-      "post": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "exportAllLeads": {
-                    "description": "Whether to export all leads or only not already exported leads.",
-                    "type": "boolean"
-                  },
-                  "fieldKeys": {
-                    "description": "The fields to include in the export.",
-                    "items": {
-                      "enum": [
-                        "domain",
-                        "potential",
-                        "performance",
-                        "generalLook",
-                        "companyName",
-                        "emails",
-                        "phoneNumbers",
-                        "address",
-                        "employeeCount",
-                        "revenue",
-                        "a-record",
-                        "nameserver",
-                        "mailserver",
-                        "techStack"
-                      ],
-                      "type": "string"
-                    },
-                    "type": "array"
-                  }
-                },
-                "required": [
-                  "fieldKeys",
-                  "exportAllLeads"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create an export of unlocked leads for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ],
-        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-export instead.",
-        "deprecated": true
-      }
-    },
-    "/v2-experimental/customers/{customerId}/unlocked-leads-export": {
-      "post": {
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "exportAllLeads": {
-                    "description": "Whether to export all leads or only not already exported leads.",
-                    "type": "boolean"
-                  },
-                  "fieldKeys": {
-                    "description": "The fields to include in the export.",
-                    "items": {
-                      "enum": [
-                        "domain",
-                        "potential",
-                        "performance",
-                        "generalLook",
-                        "companyName",
-                        "emails",
-                        "phoneNumbers",
-                        "address",
-                        "employeeCount",
-                        "revenue",
-                        "a-record",
-                        "nameserver",
-                        "mailserver",
-                        "techStack"
-                      ],
-                      "type": "string"
-                    },
-                    "type": "array"
-                  }
-                },
-                "required": [
-                  "fieldKeys",
-                  "exportAllLeads"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Create an export of unlocked leads for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ],
-        "description": "This route is deprecated. Please use /v2/customers/{customerId}/unlocked-leads-export instead.",
-        "deprecated": true
-      }
-    },
-    "/v2/customers/{customerId}/unlocked-leads-export": {
-      "post": {
-        "operationId": "leadfyndr-create-leads-export",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "exportAllLeads": {
-                    "description": "Whether to export all leads or only not already exported leads.",
-                    "type": "boolean"
-                  },
-                  "fieldKeys": {
-                    "description": "The fields to include in the export.",
-                    "items": {
-                      "enum": [
-                        "domain",
-                        "potential",
-                        "performance",
-                        "generalLook",
-                        "companyName",
-                        "emails",
-                        "phoneNumbers",
-                        "address",
-                        "employeeCount",
-                        "revenue",
-                        "a-record",
-                        "nameserver",
-                        "mailserver",
-                        "techStack"
-                      ],
-                      "type": "string"
-                    },
-                    "type": "array"
-                  }
-                },
-                "required": [
-                  "fieldKeys",
-                  "exportAllLeads"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "contentBase64": {
-                      "description": "The base64 encoded csv content of the export.",
-                      "type": "string"
-                    },
-                    "exportId": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "exportId",
-                    "contentBase64"
-                  ],
-                  "type": "object"
-                }
-              },
-              "text/csv": {
-                "schema": {
-                  "description": "The csv content of the export.",
-                  "type": "string"
-                }
-              }
-            },
-            "description": ""
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Create an export of unlocked leads for the given customerId.",
-        "tags": [
-          "LeadFyndr"
-        ]
-      }
-    },
-    "/v2/stacks/{stackId}/volumes": {
-      "get": {
-        "operationId": "container-list-stack-volumes",
-        "parameters": [
-          {
-            "description": "ID of the Stack to list Volumes for.",
-            "in": "path",
-            "name": "stackId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Search term to list Volumes for. The field name is searchable.",
-            "in": "query",
-            "name": "searchTerm",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Sorts the list with given order.",
-            "in": "query",
-            "name": "sortOrder",
-            "schema": {
-              "$ref": "#/components/schemas/de.mittwald.v1.container.VolumeSortOrder"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The max count of resources to return in the list response.",
-            "schema": {
-              "type": "integer",
-              "default": 1000,
-              "minimum": 1
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "description": "Number of items to skip. Should be multiple of `limit`.",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "required": false
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.container.VolumeResponse"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "OK",
-            "headers": {
-              "X-Pagination-Limit": {
-                "description": "The limit used to select the resources for the response",
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "X-Pagination-Skip": {
-                "description": "The number of skipped items",
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "X-Pagination-Page": {
-                "description": "The calculate page of the list response. Refer to parameters to learn more.",
-                "schema": {
-                  "type": "number"
-                }
-              },
-              "X-Pagination-TotalCount": {
-                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
-                "schema": {
-                  "type": "integer"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "List Volumes belonging to a Stack.",
-        "tags": [
-          "Container"
         ]
       }
     }
