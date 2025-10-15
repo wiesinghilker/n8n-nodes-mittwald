@@ -1386,6 +1386,15 @@
           "terminationTargetDate": {
             "format": "date-time",
             "type": "string"
+          },
+          "variantDescription": {
+            "type": "string"
+          },
+          "variantKey": {
+            "type": "string"
+          },
+          "variantName": {
+            "type": "string"
           }
         },
         "required": [
@@ -13128,6 +13137,54 @@
         },
         "required": [
           "userId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.extension.PricePlan": {
+        "description": "PricePlan with Variants.",
+        "properties": {
+          "variants": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.extension.Variant"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "variants"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.extension.Variant": {
+        "properties": {
+          "description": {
+            "description": "Description of Variant.",
+            "type": "string"
+          },
+          "descriptionChangeType": {
+            "description": "DescriptionChangeType defines how the description change should be handled. Values:\n  - FEATURE_SET_MODIFIED: The users have to confirm to the new contract details equal as price changes.\n  - FEATURE_SET_UNCHANGED: The changes are only wording updates and do not impact the contract details, so no confirm is required.\n",
+            "enum": [
+              "FEATURE_SET_MODIFIED",
+              "FEATURE_SET_UNCHANGED"
+            ],
+            "type": "string"
+          },
+          "key": {
+            "description": "Key that needs to be unique in Variant.",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name of Variant.",
+            "type": "string"
+          },
+          "priceInCents": {
+            "description": "Price in cents.",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "priceInCents"
         ],
         "type": "object"
       },
@@ -35046,6 +35103,13 @@
           "content": {
             "application/json": {
               "schema": {
+                "properties": {
+                  "variantKey": {
+                    "description": "The Variant Key of the selected Variant of the Extension. This is only required if the Extension has multiple Variants.",
+                    "example": "default",
+                    "type": "string"
+                  }
+                },
                 "type": "object"
               }
             }
@@ -36774,19 +36838,65 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "properties": {
-                  "dryRun": {
-                    "default": false,
-                    "description": "If set to true, the request will be validated but not executed.",
-                    "type": "boolean"
-                  },
-                  "priceInCents": {
-                    "description": "Price in cents.",
-                    "type": "number"
+              "examples": {
+                "priceInCents": {
+                  "value": {
+                    "dryRun": true,
+                    "priceInCents": 999
                   }
                 },
-                "type": "object"
+                "pricePlan": {
+                  "value": {
+                    "dryRun": true,
+                    "pricePlan": {
+                      "variants": [
+                        {
+                          "description": "Description of the Variant.",
+                          "key": "variant-key",
+                          "name": "Name of the Variant",
+                          "priceInCents": 999
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "schema": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "dryRun": {
+                        "default": false,
+                        "description": "If set to true, the request will be validated but not executed.",
+                        "type": "boolean"
+                      },
+                      "priceInCents": {
+                        "description": "Price in cents.",
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "priceInCents"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "dryRun": {
+                        "default": false,
+                        "description": "If set to true, the request will be validated but not executed.",
+                        "type": "boolean"
+                      },
+                      "pricePlan": {
+                        "$ref": "#/components/schemas/de.mittwald.v1.extension.PricePlan"
+                      }
+                    },
+                    "required": [
+                      "pricePlan"
+                    ],
+                    "type": "object"
+                  }
+                ]
               }
             }
           },
@@ -36799,7 +36909,13 @@
                 "schema": {
                   "properties": {
                     "extensionId": {
+                      "description": "The ID of the Extension.",
                       "format": "uuid",
+                      "type": "string"
+                    },
+                    "nextPossiblePriceChange": {
+                      "description": "The time until which the contributor is blocked from changing the price again.",
+                      "format": "date-time",
                       "type": "string"
                     },
                     "priceChangeConsequence": {
@@ -36851,6 +36967,10 @@
                       "type": "object"
                     }
                   },
+                  "required": [
+                    "extensionId",
+                    "priceChangeConsequence"
+                  ],
                   "type": "object"
                 }
               }
