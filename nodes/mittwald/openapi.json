@@ -5002,6 +5002,10 @@
             "format": "uuid",
             "type": "string"
           },
+          "scheduledDeletionDate": {
+            "format": "date-time",
+            "type": "string"
+          },
           "transferInAuthCode": {
             "type": "string"
           },
@@ -5763,7 +5767,8 @@
           "consentedScopes",
           "aggregateReference",
           "extensionName",
-          "contributorName"
+          "contributorName",
+          "chargeability"
         ],
         "type": "object"
       },
@@ -5775,12 +5780,16 @@
           },
           "reasons": {
             "properties": {
+              "isNonChargeableCustomer": {
+                "type": "boolean"
+              },
               "isOwnExtension": {
                 "type": "boolean"
               }
             },
             "required": [
-              "isOwnExtension"
+              "isOwnExtension",
+              "isNonChargeableCustomer"
             ],
             "type": "object"
           }
@@ -13535,7 +13544,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13572,7 +13580,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13650,7 +13657,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13690,7 +13696,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13734,7 +13739,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13812,7 +13816,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -13909,7 +13912,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -13964,7 +13966,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -14013,7 +14014,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -14318,7 +14318,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -14509,7 +14508,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -14598,7 +14596,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -14671,7 +14668,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -14793,7 +14789,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -15458,7 +15453,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -15741,7 +15735,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -15810,7 +15803,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -15857,7 +15849,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -15925,7 +15916,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -15974,7 +15964,6 @@
             "name": "appInstallationId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -22258,7 +22247,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -22307,7 +22295,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22375,7 +22362,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -22479,7 +22465,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22536,7 +22521,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -22675,7 +22659,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22716,7 +22699,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22761,7 +22743,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22862,7 +22843,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -22909,7 +22889,6 @@
             "name": "cronjobId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -23033,7 +23012,6 @@
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -23107,7 +23085,6 @@
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -26237,7 +26214,6 @@
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -26278,7 +26254,6 @@
             "name": "customerId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -29818,7 +29793,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -37174,12 +37148,18 @@
         "parameters": [
           {
             "description": "ID of the File to get the meta for.",
+            "examples": {
+              "shortId": {
+                "value": "file-123456"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "fileId",
             "required": true,
             "schema": {
-              "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -37355,12 +37335,18 @@
         "parameters": [
           {
             "description": "ID of the File to be retrieved.",
+            "examples": {
+              "shortId": {
+                "value": "file-123456"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "fileId",
             "required": true,
             "schema": {
-              "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -37494,12 +37480,18 @@
         "parameters": [
           {
             "description": "ID of the File to be retrieved.",
+            "examples": {
+              "shortId": {
+                "value": "file-123456"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
             "in": "path",
             "name": "fileId",
             "required": true,
             "schema": {
-              "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-              "format": "uuid",
               "type": "string"
             }
           },
@@ -46741,7 +46733,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -46815,7 +46806,6 @@
             "name": "projectId",
             "required": true,
             "schema": {
-              "format": "uuid",
               "type": "string"
             }
           }
@@ -56038,6 +56028,114 @@
         "summary": "Copy a MySQLDatabase with a MySQLUser.",
         "tags": [
           "Database"
+        ]
+      }
+    },
+    "/v2/domains/{domainId}/scheduled-deletion": {
+      "delete": {
+        "operationId": "domain-cancel-scheduled-deletion",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "my-domain.example"
+              },
+              "uuid": {
+                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
+              }
+            },
+            "in": "path",
+            "name": "domainId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Cancel a scheduled deletion of a Domain.",
+        "tags": [
+          "Domain"
+        ]
+      },
+      "post": {
+        "operationId": "domain-create-scheduled-deletion",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "my-domain.example"
+              },
+              "uuid": {
+                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
+              }
+            },
+            "in": "path",
+            "name": "domainId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "deletionDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "deletionDate"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Create a scheduled deletion of a Domain.",
+        "tags": [
+          "Domain"
         ]
       }
     }
