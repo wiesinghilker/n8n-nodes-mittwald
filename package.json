@@ -1,6 +1,6 @@
 {
   "name": "@wiesinghilker/n8n-nodes-mittwald",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "description": "n8n node for mittwald (mStudio)",
   "keywords": [
     "n8n-community-node-package"

@@ -24724,6 +24724,91 @@
         ]
       }
     },
+    "/v2/mysql-databases/{mysqlDatabaseId}/actions/copy": {
+      "post": {
+        "operationId": "database-copy-mysql-database",
+        "parameters": [
+          {
+            "description": "ID of the MySQLDatabase to copy.",
+            "in": "path",
+            "name": "mysqlDatabaseId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "user": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.database.CreateMySqlUserWithDatabase"
+                  }
+                },
+                "required": [
+                  "description",
+                  "user"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "userId": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Copy a MySQLDatabase with a MySQLUser.",
+        "tags": [
+          "Database"
+        ]
+      }
+    },
     "/v2/projects/{projectId}/mysql-databases": {
       "post": {
         "operationId": "database-create-mysql-database",
@@ -32544,6 +32629,114 @@
           }
         ],
         "summary": "Abort a Domain declaration.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/domains/{domainId}/scheduled-deletion": {
+      "delete": {
+        "operationId": "domain-cancel-scheduled-deletion",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "my-domain.example"
+              },
+              "uuid": {
+                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
+              }
+            },
+            "in": "path",
+            "name": "domainId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Cancel a scheduled deletion of a Domain.",
+        "tags": [
+          "Domain"
+        ]
+      },
+      "post": {
+        "operationId": "domain-create-scheduled-deletion",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "my-domain.example"
+              },
+              "uuid": {
+                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
+              }
+            },
+            "in": "path",
+            "name": "domainId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "deletionDate": {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "deletionDate"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Create a scheduled deletion of a Domain.",
         "tags": [
           "Domain"
         ]
@@ -55943,199 +56136,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/mysql-databases/{mysqlDatabaseId}/actions/copy": {
-      "post": {
-        "operationId": "database-copy-mysql-database",
-        "parameters": [
-          {
-            "description": "ID of the MySQLDatabase to copy.",
-            "in": "path",
-            "name": "mysqlDatabaseId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "description": {
-                    "type": "string"
-                  },
-                  "user": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.database.CreateMySqlUserWithDatabase"
-                  }
-                },
-                "required": [
-                  "description",
-                  "user"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "id": {
-                      "format": "uuid",
-                      "type": "string"
-                    },
-                    "userId": {
-                      "format": "uuid",
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "userId"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Created"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Copy a MySQLDatabase with a MySQLUser.",
-        "tags": [
-          "Database"
-        ]
-      }
-    },
-    "/v2/domains/{domainId}/scheduled-deletion": {
-      "delete": {
-        "operationId": "domain-cancel-scheduled-deletion",
-        "parameters": [
-          {
-            "examples": {
-              "shortId": {
-                "value": "my-domain.example"
-              },
-              "uuid": {
-                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
-              }
-            },
-            "in": "path",
-            "name": "domainId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Cancel a scheduled deletion of a Domain.",
-        "tags": [
-          "Domain"
-        ]
-      },
-      "post": {
-        "operationId": "domain-create-scheduled-deletion",
-        "parameters": [
-          {
-            "examples": {
-              "shortId": {
-                "value": "my-domain.example"
-              },
-              "uuid": {
-                "value": "XXXXXXXX-XXXX-4XXX-XXXX-XXXXXXXXXXXX"
-              }
-            },
-            "in": "path",
-            "name": "domainId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "deletionDate": {
-                    "format": "date-time",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "deletionDate"
-                ]
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Create a scheduled deletion of a Domain.",
-        "tags": [
-          "Domain"
         ]
       }
     }
