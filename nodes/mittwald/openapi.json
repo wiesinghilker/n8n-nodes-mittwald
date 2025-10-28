@@ -9124,6 +9124,12 @@
       },
       "de.mittwald.v1.mailmigration.PossibleCheckErrors": {
         "properties": {
+          "activeMailArchiveForAddress": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.mailmigration.CheckMigrationIsPossibleErrorActiveMailArchiveForAddress"
+            },
+            "type": "array"
+          },
           "alreadyExistingMailAddress": {
             "items": {
               "$ref": "#/components/schemas/de.mittwald.v1.mailmigration.CheckMigrationIsPossibleErrorAlreadyExistingMailAddress"
@@ -9167,7 +9173,8 @@
           "catchAllMissingAddress",
           "catchAllTargetWithoutAlias",
           "missingVerifiedIngress",
-          "alreadyExistingMailAddress"
+          "alreadyExistingMailAddress",
+          "activeMailArchiveForAddress"
         ],
         "type": "object"
       },
@@ -13199,6 +13206,17 @@
           "storageDesc"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.mailmigration.CheckMigrationIsPossibleErrorActiveMailArchiveForAddress": {
+        "properties": {
+          "address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
