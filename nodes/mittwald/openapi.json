@@ -1700,6 +1700,9 @@
             },
             "type": "array"
           },
+          "deploy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.Deploy"
+          },
           "description": {
             "example": "MySQL DB",
             "type": "string"
@@ -1780,6 +1783,9 @@
             },
             "type": "array"
           },
+          "deploy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.Deploy"
+          },
           "description": {
             "example": "MySQL DB",
             "type": "string"
@@ -1847,6 +1853,9 @@
       },
       "de.mittwald.v1.container.ServiceResponse": {
         "properties": {
+          "deploy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.Deploy"
+          },
           "deployedState": {
             "$ref": "#/components/schemas/de.mittwald.v1.container.ServiceState"
           },
@@ -13216,6 +13225,32 @@
         "required": [
           "address"
         ],
+        "type": "object"
+      },
+      "de.mittwald.v1.container.Deploy": {
+        "properties": {
+          "resources": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.Resources"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.container.ResourceSpec": {
+        "properties": {
+          "cpus": {
+            "type": "string"
+          },
+          "memory": {
+            "type": "string"
+          }
+        }
+      },
+      "de.mittwald.v1.container.Resources": {
+        "properties": {
+          "limits": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.ResourceSpec"
+          }
+        },
         "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
@@ -40531,13 +40566,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
@@ -40806,13 +40851,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
@@ -41082,13 +41137,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
@@ -41409,13 +41474,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
@@ -41694,13 +41769,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
@@ -41980,13 +42065,23 @@
             }
           },
           {
-            "description": "A list of technologies to filter.\n",
+            "description": "A list of technologies to filter. Use \"none\" to filter leads without a main technology.\n",
             "in": "query",
             "name": "technologies",
             "required": false,
             "schema": {
               "items": {
-                "type": "string"
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "enum": [
+                      "none"
+                    ],
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             }
