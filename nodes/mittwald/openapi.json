@@ -1771,6 +1771,14 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.container.Deploy": {
+        "properties": {
+          "resources": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.Resources"
+          }
+        },
+        "type": "object"
+      },
       "de.mittwald.v1.container.ServiceRequest": {
         "properties": {
           "command": {
@@ -1847,6 +1855,24 @@
               "type": "string"
             },
             "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.container.ResourceSpec": {
+        "properties": {
+          "cpus": {
+            "type": "string"
+          },
+          "memory": {
+            "type": "string"
+          }
+        }
+      },
+      "de.mittwald.v1.container.Resources": {
+        "properties": {
+          "limits": {
+            "$ref": "#/components/schemas/de.mittwald.v1.container.ResourceSpec"
           }
         },
         "type": "object"
@@ -7668,7 +7694,6 @@
         "properties": {
           "co2": {
             "format": "float",
-            "maximum": 1,
             "minimum": 0,
             "type": "number"
           },
@@ -7719,19 +7744,19 @@
         "properties": {
           "address": {
             "properties": {
-              "address_prefix": {
+              "addressPrefix": {
                 "type": "string"
               },
               "city": {
                 "minLength": 1,
                 "type": "string"
               },
-              "country_code": {
+              "countryCode": {
                 "maxLength": 2,
                 "minLength": 2,
                 "type": "string"
               },
-              "house_number": {
+              "houseNumber": {
                 "minLength": 1,
                 "type": "string"
               },
@@ -9043,6 +9068,17 @@
         },
         "required": [
           "projectId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.mailmigration.CheckMigrationIsPossibleErrorActiveMailArchiveForAddress": {
+        "properties": {
+          "address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "address"
         ],
         "type": "object"
       },
@@ -13216,41 +13252,25 @@
         ],
         "type": "string"
       },
-      "de.mittwald.v1.mailmigration.CheckMigrationIsPossibleErrorActiveMailArchiveForAddress": {
+      "de.mittwald.v1.cronjob.CronjobExecutionAnalysis": {
         "properties": {
-          "address": {
+          "issues": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "message": {
+            "example": "**Mögliche Fehlerursache**: Der zur Verfügung stehende Speicherplatz reicht für die Durchführung des Backups nicht aus. **Möglicher Lösungsansatz:** Passe den reservierten Speicherplatz für den Pod in den Umgebungsvariablen an.",
+            "type": "string"
+          },
+          "recommendation": {
             "type": "string"
           }
         },
         "required": [
-          "address"
+          "message"
         ],
-        "type": "object"
-      },
-      "de.mittwald.v1.container.Deploy": {
-        "properties": {
-          "resources": {
-            "$ref": "#/components/schemas/de.mittwald.v1.container.Resources"
-          }
-        },
-        "type": "object"
-      },
-      "de.mittwald.v1.container.ResourceSpec": {
-        "properties": {
-          "cpus": {
-            "type": "string"
-          },
-          "memory": {
-            "type": "string"
-          }
-        }
-      },
-      "de.mittwald.v1.container.Resources": {
-        "properties": {
-          "limits": {
-            "$ref": "#/components/schemas/de.mittwald.v1.container.ResourceSpec"
-          }
-        },
         "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
@@ -56249,6 +56269,73 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/executions/{executionId}/analysis": {
+      "get": {
+        "operationId": "cronjob-get-execution-analysis",
+        "parameters": [
+          {
+            "description": "ID of the CronjobExecution to be analyzed.",
+            "example": "cron-bd26li-28027320",
+            "in": "path",
+            "name": "executionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.cronjob.CronjobExecutionAnalysis"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get a CronjobExecution analysis for failed executions.",
+        "tags": [
+          "Cronjob"
         ]
       }
     }
