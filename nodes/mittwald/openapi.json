@@ -13254,17 +13254,8 @@
       },
       "de.mittwald.v1.cronjob.CronjobExecutionAnalysis": {
         "properties": {
-          "issues": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
           "message": {
-            "example": "**Mögliche Fehlerursache**: Der zur Verfügung stehende Speicherplatz reicht für die Durchführung des Backups nicht aus. **Möglicher Lösungsansatz:** Passe den reservierten Speicherplatz für den Pod in den Umgebungsvariablen an.",
-            "type": "string"
-          },
-          "recommendation": {
+            "example": "Überprüfe die URL im Cronjob-Konfigurationsformular und korrigiere sie gegebenenfalls. Stelle sicher, dass die Domain gültig ist und DNS-Einträge korrekt konfiguriert wurden. Falls die URL falsch ist, aktualisiere sie mit der richtigen Adresse.",
             "type": "string"
           }
         },
@@ -52118,7 +52109,21 @@
             "description": "Multi factor authentication is activated for this user. After calling this, you need to call '/authentication/mfa' with a valid multi factor code.\n"
           },
           "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/de.mittwald.v1.commons.ValidationErrors"
+                    },
+                    {
+                      "$ref": "#/components/schemas/de.mittwald.v1.commons.Error"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Authentication failed because of wrong credentials.\n"
           },
           "401": {
             "content": {
