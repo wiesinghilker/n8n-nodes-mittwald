@@ -3790,6 +3790,18 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.cronjob.CronjobExecutionAnalysis": {
+        "properties": {
+          "message": {
+            "example": "Überprüfe die URL im Cronjob-Konfigurationsformular und korrigiere sie gegebenenfalls. Stelle sicher, dass die Domain gültig ist und DNS-Einträge korrekt konfiguriert wurden. Falls die URL falsch ist, aktualisiere sie mit der richtigen Adresse.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.cronjob.CronjobExecutionSortOrder": {
         "enum": [
           "oldestFirst",
@@ -13251,18 +13263,6 @@
           "storageDesc"
         ],
         "type": "string"
-      },
-      "de.mittwald.v1.cronjob.CronjobExecutionAnalysis": {
-        "properties": {
-          "message": {
-            "example": "Überprüfe die URL im Cronjob-Konfigurationsformular und korrigiere sie gegebenenfalls. Stelle sicher, dass die Domain gültig ist und DNS-Einträge korrekt konfiguriert wurden. Falls die URL falsch ist, aktualisiere sie mit der richtigen Adresse.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ],
-        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -22883,6 +22883,73 @@
           }
         ],
         "summary": "Update a Cronjob.",
+        "tags": [
+          "Cronjob"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/executions/{executionId}/analysis": {
+      "get": {
+        "operationId": "cronjob-get-execution-analysis",
+        "parameters": [
+          {
+            "description": "ID of the CronjobExecution to be analyzed.",
+            "example": "cron-bd26li-28027320",
+            "in": "path",
+            "name": "executionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.cronjob.CronjobExecutionAnalysis"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get a CronjobExecution analysis for failed executions.",
         "tags": [
           "Cronjob"
         ]
@@ -34653,7 +34720,7 @@
     "/v2/contributors/{contributorId}/extensions/{extensionId}": {
       "delete": {
         "operationId": "extension-delete-extension",
-        "description": "This action deletes all ExtensionInstances and afterwards the Extension itself.",
+        "description": "Remove the Extension. Make sure that there are no instances for this extension",
         "parameters": [
           {
             "in": "path",
@@ -34695,6 +34762,9 @@
           },
           "404": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
@@ -56274,73 +56344,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/cronjobs/{cronjobId}/executions/{executionId}/analysis": {
-      "get": {
-        "operationId": "cronjob-get-execution-analysis",
-        "parameters": [
-          {
-            "description": "ID of the CronjobExecution to be analyzed.",
-            "example": "cron-bd26li-28027320",
-            "in": "path",
-            "name": "executionId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.cronjob.CronjobExecutionAnalysis"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Get a CronjobExecution analysis for failed executions.",
-        "tags": [
-          "Cronjob"
         ]
       }
     }
