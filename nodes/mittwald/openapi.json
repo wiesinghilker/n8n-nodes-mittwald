@@ -4421,7 +4421,7 @@
             ],
             "maxMemory": "16Mi",
             "maxMemoryPolicy": "allkeys-lru",
-            "persistent": "true"
+            "persistent": true
           },
           "createdAt": "2023-03-28T13:15:00.000Z",
           "description": "My first RedisDatabase!",
@@ -4434,9 +4434,9 @@
           "port": 6379,
           "projectId": "9f2bddf1-dea6-4441-b4fe-a22ff39caff8",
           "status": "error",
-          "statusSetAt": "2024-03-05T9:26:32.000Z",
+          "statusSetAt": "2024-03-05T09:26:32.000Z",
           "storageUsageInBytes": 10485760,
-          "storageUsageInBytesSetAt": "2024-03-05T9:26:32.000Z",
+          "storageUsageInBytesSetAt": "2024-03-05T09:26:32.000Z",
           "updatedAt": "2023-03-29T15:50:10.000Z",
           "version": "7.0"
         },
@@ -6686,12 +6686,12 @@
       "de.mittwald.v1.file.FileType": {
         "properties": {
           "extensions": {
+            "example": [
+              ".jpe",
+              ".jpeg",
+              ".jpg"
+            ],
             "items": {
-              "example": [
-                ".jpe",
-                ".jpeg",
-                ".jpg"
-              ],
               "type": "string"
             },
             "type": "array"
@@ -6710,12 +6710,12 @@
       "de.mittwald.v1.file.FileUploadRules": {
         "properties": {
           "extensions": {
+            "example": [
+              ".png",
+              ".jpeg",
+              ".jpg"
+            ],
             "items": {
-              "example": [
-                ".png",
-                ".jpeg",
-                ".jpg"
-              ],
               "type": "string"
             },
             "type": "array"
@@ -6750,11 +6750,11 @@
             "type": "integer"
           },
           "mimeTypes": {
+            "example": [
+              "image/png",
+              "image/jpeg"
+            ],
             "items": {
-              "example": [
-                "image/png",
-                "image/jpeg"
-              ],
               "type": "string"
             },
             "type": "array"
@@ -29808,7 +29808,7 @@
         ]
       }
     },
-    "/v2/projects/{projectId}/mail-settings/{setting}": {
+    "/v2/projects/{projectId}/mail-settings/{mailSetting}": {
       "put": {
         "operationId": "deprecated-mail-update-project-mail-setting",
         "deprecated": true,
@@ -29834,7 +29834,7 @@
           {
             "description": "The setting to update.",
             "in": "path",
-            "name": "setting",
+            "name": "mailSetting",
             "required": true,
             "schema": {
               "enum": [
@@ -29888,6 +29888,117 @@
         },
         "responses": {
           "200": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a mail setting of a Project.",
+        "tags": [
+          "Mail"
+        ]
+      },
+      "patch": {
+        "operationId": "mail-update-project-mail-setting",
+        "parameters": [
+          {
+            "description": "ID of the Project to update a mail setting for.",
+            "examples": {
+              "shortId": {
+                "value": "p-ab1cd2"
+              },
+              "uuid": {
+                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
+              }
+            },
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The mail setting to update.",
+            "in": "path",
+            "name": "mailSetting",
+            "required": true,
+            "schema": {
+              "enum": [
+                "blacklist",
+                "whitelist"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "properties": {
+                      "blacklist": {
+                        "items": {
+                          "format": "idn-email",
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "blacklist"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "properties": {
+                      "whitelist": {
+                        "items": {
+                          "format": "idn-email",
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "whitelist"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
             "description": "OK"
           },
           "400": {
@@ -33266,9 +33377,7 @@
         "parameters": [
           {
             "description": "The top level domain to retrieve the schemas for.",
-            "example": {
-              "value": "de"
-            },
+            "example": "de",
             "in": "path",
             "name": "tld",
             "required": true,
@@ -44584,119 +44693,6 @@
           }
         ],
         "summary": "Update the catch-all of a MailAddress.",
-        "tags": [
-          "Mail"
-        ]
-      }
-    },
-    "/v2/projects/{projectId}/mail-settings/{mailSetting}": {
-      "patch": {
-        "operationId": "mail-update-project-mail-setting",
-        "parameters": [
-          {
-            "description": "ID of the Project to update a mail setting for.",
-            "examples": {
-              "shortId": {
-                "value": "p-ab1cd2"
-              },
-              "uuid": {
-                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
-              }
-            },
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "The mail setting to update.",
-            "in": "path",
-            "name": "mailSetting",
-            "required": true,
-            "schema": {
-              "enum": [
-                "blacklist",
-                "whitelist"
-              ],
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "properties": {
-                      "blacklist": {
-                        "items": {
-                          "format": "idn-email",
-                          "type": "string"
-                        },
-                        "type": "array"
-                      }
-                    },
-                    "required": [
-                      "blacklist"
-                    ],
-                    "type": "object"
-                  },
-                  {
-                    "properties": {
-                      "whitelist": {
-                        "items": {
-                          "format": "idn-email",
-                          "type": "string"
-                        },
-                        "type": "array"
-                      }
-                    },
-                    "required": [
-                      "whitelist"
-                    ],
-                    "type": "object"
-                  }
-                ]
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "503": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a mail setting of a Project.",
         "tags": [
           "Mail"
         ]
