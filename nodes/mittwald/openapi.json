@@ -1161,6 +1161,13 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.backup.RestorePathPhase": {
+        "enum": [
+          "running",
+          "completed"
+        ],
+        "type": "string"
+      },
       "de.mittwald.v1.backup.BackupSortOrder": {
         "enum": [
           "oldestFirst",
@@ -1251,6 +1258,9 @@
             "format": "date-time",
             "type": "string"
           },
+          "restorePath": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePath"
+          },
           "status": {
             "example": "Completed",
             "type": "string"
@@ -1300,6 +1310,96 @@
         "required": [
           "format",
           "withPassword"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupPath": {
+        "properties": {
+          "absolutePath": {
+            "type": "string"
+          },
+          "isDirectory": {
+            "type": "boolean"
+          },
+          "isExecutable": {
+            "type": "boolean"
+          },
+          "isFile": {
+            "type": "boolean"
+          },
+          "isSymlink": {
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupPath"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "target": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "absolutePath",
+          "name",
+          "size"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestorePathRequest": {
+        "properties": {
+          "clearTargetPath": {
+            "default": false,
+            "description": "Whether to clear the target path before restoring. If true, existing files in the target path will be deleted before the restore. If false, existing files will be kept and may be overwritten if they exist in the backup.",
+            "type": "boolean"
+          },
+          "sourcePath": {
+            "example": "/html/mainApp/config/",
+            "type": "string"
+          },
+          "targetPath": {
+            "description": "Target path where the source path should be restored to. If not set, the target path will be determined to equal the origin source. The target path should always be a folder, no files allowed here.",
+            "example": "/html/mainApp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourcePath"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestorePath": {
+        "properties": {
+          "clearTargetPath": {
+            "default": false,
+            "type": "boolean"
+          },
+          "determinedTargetPath": {
+            "type": "string"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.RestorePathPhase"
+          },
+          "sourcePath": {
+            "type": "string"
+          },
+          "targetPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phase",
+          "sourcePath",
+          "determinedTargetPath",
+          "clearTargetPath"
         ],
         "type": "object"
       },
@@ -16991,6 +17091,124 @@
           }
         ],
         "summary": "Get a ProjectBackup.",
+        "tags": [
+          "Backup"
+        ]
+      }
+    },
+    "/v2/project-backups/{projectBackupId}/path": {
+      "get": {
+        "operationId": "backup-get-project-backup-directories",
+        "parameters": [
+          {
+            "description": "UUID of the Project Backup to get the table of contents for.",
+            "in": "path",
+            "name": "projectBackupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "The directory to start listing subdirectories from.",
+            "in": "query",
+            "name": "directory",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupPath"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "502": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get table of contents for a ProjectBackup.",
+        "tags": [
+          "Backup"
+        ]
+      }
+    },
+    "/v2/project-backups/{projectBackupId}/restore-path": {
+      "post": {
+        "operationId": "backup-request-project-backup-restore-path",
+        "parameters": [
+          {
+            "description": "ID of the ProjectBackup to restore the path.",
+            "in": "path",
+            "name": "projectBackupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePathRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Restore a ProjectBackup's path.",
         "tags": [
           "Backup"
         ]
