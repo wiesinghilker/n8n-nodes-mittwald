@@ -3498,6 +3498,9 @@
           "active": {
             "type": "boolean"
           },
+          "atlasGroup": {
+            "$ref": "#/components/schemas/de.mittwald.v1.conversation.Group"
+          },
           "avatarRefId": {
             "type": "string"
           },
@@ -3506,6 +3509,9 @@
           },
           "department": {
             "$ref": "#/components/schemas/de.mittwald.v1.conversation.Department"
+          },
+          "group": {
+            "$ref": "#/components/schemas/de.mittwald.v1.conversation.Group"
           },
           "userId": {
             "type": "string"
@@ -13367,6 +13373,27 @@
           "storageDesc"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.conversation.Group": {
+        "properties": {
+          "acronym": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isDefaultGroup": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
