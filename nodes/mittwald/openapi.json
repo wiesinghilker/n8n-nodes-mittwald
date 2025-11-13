@@ -1966,9 +1966,11 @@
       "de.mittwald.v1.container.ResourceSpec": {
         "properties": {
           "cpus": {
+            "example": "0.5",
             "type": "string"
           },
           "memory": {
+            "example": "1gb",
             "type": "string"
           }
         }
@@ -2913,6 +2915,27 @@
           "status",
           "name",
           "type"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.conversation.Group": {
+        "properties": {
+          "acronym": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "isDefaultGroup": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
         ],
         "type": "object"
       },
@@ -13374,27 +13397,6 @@
         ],
         "type": "string"
       },
-      "de.mittwald.v1.conversation.Group": {
-        "properties": {
-          "acronym": {
-            "type": "string"
-          },
-          "id": {
-            "type": "string"
-          },
-          "isDefaultGroup": {
-            "type": "boolean"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "name"
-        ],
-        "type": "object"
-      },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
         "properties": {
@@ -19325,7 +19327,7 @@
             }
           },
           {
-            "example": "19b2d44-e6be-46dc-96f7-9602a7177a75",
+            "example": "d6913c2b-6be6-4036-b207-d9c125f6f93e",
             "in": "path",
             "name": "contractItemId",
             "required": true,
@@ -53058,7 +53060,7 @@
                   "properties": {
                     "recoveryCodesList": {
                       "items": {
-                        "example": 1234123412341234,
+                        "example": "1234123412341234",
                         "maxLength": 16,
                         "minLength": 16,
                         "type": "string"
@@ -53232,7 +53234,7 @@
                   "properties": {
                     "recoveryCodesList": {
                       "items": {
-                        "example": 1234123412341234,
+                        "example": "1234123412341234",
                         "maxLength": 16,
                         "minLength": 16,
                         "type": "string"
@@ -53358,11 +53360,9 @@
                   },
                   "roles": {
                     "description": "Determines the access rights of the ApiToken.",
-                    "example": {
-                      "value": [
-                        "api_read"
-                      ]
-                    },
+                    "example": [
+                      "api_read"
+                    ],
                     "items": {
                       "enum": [
                         "api_read",
@@ -53487,11 +53487,9 @@
                   },
                   "roles": {
                     "description": "Determines the access rights of the ApiToken.",
-                    "example": {
-                      "value": [
-                        "api_read"
-                      ]
-                    },
+                    "example": [
+                      "api_read"
+                    ],
                     "items": {
                       "enum": [
                         "api_read",
@@ -53522,6 +53520,7 @@
                   "properties": {
                     "token": {
                       "description": "The `ApiToken`.",
+                      "example": "00000000-0000-4000-0000-000000000000:foobar:mittwald_a",
                       "type": "string"
                     }
                   },
@@ -56341,7 +56340,7 @@
                   },
                   "token": {
                     "description": "The token that was send to your email address",
-                    "example": 123456,
+                    "example": "123456",
                     "maxLength": 16,
                     "minLength": 6,
                     "type": "string"
@@ -56399,7 +56398,7 @@
                   },
                   "token": {
                     "description": "The token that was send to your email address",
-                    "example": 123456,
+                    "example": "123456",
                     "maxLength": 16,
                     "minLength": 6,
                     "type": "string"
