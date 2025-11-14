@@ -21222,6 +21222,13 @@
                       "invoiceNumber": {
                         "type": "string"
                       },
+                      "invoiceType": {
+                        "enum": [
+                          "INVOICE",
+                          "CREDIT_NOTE"
+                        ],
+                        "type": "string"
+                      },
                       "pdfLink": {
                         "type": "string"
                       },
@@ -21241,8 +21248,8 @@
                       "invoiceDate",
                       "totalNet",
                       "totalGross",
-                      "webLink",
-                      "pdfLink"
+                      "pdfLink",
+                      "invoiceType"
                     ],
                     "type": "object"
                   },
