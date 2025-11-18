@@ -4111,6 +4111,18 @@
           "customerNumber": {
             "type": "string"
           },
+          "deletionProhibitedBy": {
+            "items": {
+              "enum": [
+                "hasOpenInvoices",
+                "hasActiveContracts",
+                "hasActiveExtensionSubscriptions",
+                "isActiveContributor"
+              ],
+              "type": "string"
+            },
+            "type": "array"
+          },
           "executingUserRoles": {
             "items": {
               "$ref": "#/components/schemas/de.mittwald.v1.customer.Role"
@@ -4744,6 +4756,8 @@
         "properties": {
           "fqdn": {
             "format": "idn-dnsname",
+            "maxLength": 255,
+            "minLength": 1,
             "type": "string"
           },
           "settings": {
@@ -4877,7 +4891,7 @@
         "properties": {
           "fqdn": {
             "format": "idn-dnsname",
-            "maxLength": 50,
+            "maxLength": 255,
             "minLength": 1,
             "type": "string"
           },
@@ -4943,7 +4957,7 @@
         "properties": {
           "fqdn": {
             "format": "idn-dnsname",
-            "maxLength": 50,
+            "maxLength": 255,
             "minLength": 1,
             "type": "string"
           },
@@ -9033,7 +9047,6 @@
         "required": [
           "id",
           "address",
-          "preMigrationJobs",
           "migrationJobs",
           "finished"
         ],
@@ -38383,6 +38396,9 @@
           },
           "404": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
