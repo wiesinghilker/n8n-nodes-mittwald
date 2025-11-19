@@ -5634,6 +5634,9 @@
               }
             ]
           },
+          "pricingDetails": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.PricePlanDetails"
+          },
           "published": {
             "description": "Whether the extension has been published by the contributor.",
             "enum": [
@@ -6341,6 +6344,9 @@
               }
             ]
           },
+          "pricingDetails": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.PricePlanDetails"
+          },
           "published": {
             "type": "boolean"
           },
@@ -6457,7 +6463,7 @@
               "type": "string"
             },
             "isBookingStopped": {
-              "example": "If a variant is no longer bookable the existing extension instances will not be removed but no new ones can be created.",
+              "description": "If a variant is no longer bookable the existing extension instances will not be removed but no new ones can be created.",
               "type": "boolean"
             },
             "key": {
@@ -13409,6 +13415,22 @@
           "storageDesc"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.marketplace.PricePlanDetails": {
+        "description": "The details section of the price plan. It informs if choosing different variants as a upgrade or downgrade is possible.",
+        "properties": {
+          "isDowngradeAllowed": {
+            "type": "boolean"
+          },
+          "isUpgradeAllowed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isUpgradeAllowed",
+          "isDowngradeAllowed"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -35028,9 +35050,6 @@
               }
             },
             "description": "The ExtensionInstance has been removed. It will be cleaned up in the background."
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
           },
           "412": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
