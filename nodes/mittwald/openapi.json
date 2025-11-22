@@ -13112,13 +13112,13 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
+      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
         "properties": {
-          "commonName": {
+          "certificate": {
             "type": "string"
           },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          "privateKey": {
+            "type": "string"
           },
           "projectId": {
             "format": "uuid",
@@ -13127,8 +13127,8 @@
         },
         "required": [
           "projectId",
-          "commonName",
-          "contact"
+          "certificate",
+          "privateKey"
         ],
         "type": "object"
       },
@@ -13189,28 +13189,13 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
+      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
         "properties": {
-          "newValue": {
+          "commonName": {
             "type": "string"
           },
-          "oldValue": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
-        "properties": {
-          "certificate": {
-            "type": "string"
-          },
-          "privateKey": {
-            "type": "string"
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
           },
           "projectId": {
             "format": "uuid",
@@ -13219,8 +13204,8 @@
         },
         "required": [
           "projectId",
-          "certificate",
-          "privateKey"
+          "commonName",
+          "contact"
         ],
         "type": "object"
       },
@@ -13291,6 +13276,21 @@
           "certificate",
           "isExpired",
           "lastExpirationThresholdHit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
+        "properties": {
+          "newValue": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
         ],
         "type": "object"
       },
@@ -41928,6 +41928,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
           },
@@ -42865,6 +42868,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
           },
           "403": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
