@@ -6641,6 +6641,9 @@
               }
             ]
           },
+          "pricingDetails": {
+            "$ref": "#/components/schemas/de.mittwald.v1.marketplace.PricePlanDetails"
+          },
           "published": {
             "description": "Whether the extension has been published by the contributor.",
             "enum": [
@@ -14634,7 +14637,7 @@
             }
           },
           {
-            "description": "Search term to filter for. The fields id, shortId, description, appVersion and systemSoftwareVersion are searchable.",
+            "description": "Search term to filter for. The fields id, shortId, description, appVersion, systemSoftwareVersion and customerId are searchable.",
             "in": "query",
             "name": "searchTerm",
             "required": false,
@@ -14648,6 +14651,7 @@
             "description": "The max count of resources to return in the list response.",
             "schema": {
               "type": "integer",
+              "default": 1000,
               "minimum": 1
             },
             "required": false
@@ -14771,6 +14775,7 @@
             "description": "The max count of resources to return in the list response.",
             "schema": {
               "type": "integer",
+              "default": 1000,
               "minimum": 1
             },
             "required": false
@@ -14931,6 +14936,7 @@
             "description": "The max count of resources to return in the list response.",
             "schema": {
               "type": "integer",
+              "default": 1000,
               "minimum": 1
             },
             "required": false
@@ -15292,6 +15298,7 @@
             "description": "The max count of resources to return in the list response.",
             "schema": {
               "type": "integer",
+              "default": 1000,
               "minimum": 1
             },
             "required": false
@@ -15387,6 +15394,7 @@
             "description": "The max count of resources to return in the list response.",
             "schema": {
               "type": "integer",
+              "default": 1000,
               "minimum": 1
             },
             "required": false
@@ -56696,6 +56704,82 @@
         "summary": "Delete a Certificate.",
         "tags": [
           "Domain"
+        ]
+      }
+    },
+    "/internal-v2/contributors/{contributorId}/actions/reject": {
+      "post": {
+        "operationId": "contributor-reject-contributor-internal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contributorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The Contributor has been rejected."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Reject a contributor verification request.",
+        "tags": [
+          "Marketplace"
+        ]
+      }
+    },
+    "/internal-v2/contributors/{contributorId}/actions/verify": {
+      "post": {
+        "operationId": "contributor-verify-contributor-internal",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contributorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The Contributor has been verified."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Accept a contributor verification request",
+        "tags": [
+          "Marketplace"
         ]
       }
     }
