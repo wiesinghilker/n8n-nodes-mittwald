@@ -13047,26 +13047,6 @@
         },
         "type": "object"
       },
-      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
-        "properties": {
-          "changes": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
-          },
-          "errors": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
-            },
-            "type": "array"
-          },
-          "isReplaceable": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "isReplaceable"
-        ],
-        "type": "object"
-      },
       "de.mittwald.v1.ssl.CheckReplaceSliceChange": {
         "properties": {
           "addedValues": {
@@ -13092,6 +13072,66 @@
           "values",
           "addedValues",
           "removedValues"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceChanges": {
+        "properties": {
+          "commonName": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
+          },
+          "dnsNames": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceSliceChange"
+          },
+          "issuer": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
+          },
+          "validFrom": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
+          },
+          "validTo": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
+        "properties": {
+          "changes": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
+            },
+            "type": "array"
+          },
+          "isReplaceable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isReplaceable"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
+        "properties": {
+          "certificate": {
+            "type": "string"
+          },
+          "privateKey": {
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "certificate",
+          "privateKey"
         ],
         "type": "object"
       },
@@ -13290,61 +13330,6 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.ssl.CheckReplaceChanges": {
-        "properties": {
-          "commonName": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
-          },
-          "dnsNames": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceSliceChange"
-          },
-          "issuer": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
-          },
-          "validFrom": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
-          },
-          "validTo": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
-          }
-        },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
-        "properties": {
-          "newValue": {
-            "type": "string"
-          },
-          "oldValue": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
-        "properties": {
-          "certificate": {
-            "type": "string"
-          },
-          "privateKey": {
-            "type": "string"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "certificate",
-          "privateKey"
-        ],
-        "type": "object"
-      },
       "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
         "properties": {
           "commonName": {
@@ -13432,6 +13417,21 @@
           "certificate",
           "isExpired",
           "lastExpirationThresholdHit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
+        "properties": {
+          "newValue": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
         ],
         "type": "object"
       },
@@ -49831,7 +49831,7 @@
         "operationId": "project-list-servers",
         "parameters": [
           {
-            "description": "ID of the Organization to list PlacementGroups for. If no ID is provided, the ID of the executing User is used instead.",
+            "description": "ID of the Organization to list Servers for. If no ID is provided, the ID of the executing User is used instead.",
             "in": "query",
             "name": "customerId",
             "required": false,
