@@ -12946,6 +12946,23 @@
         ],
         "type": "string"
       },
+      "de.mittwald.v1.ssl.CheckReplaceDateChange": {
+        "properties": {
+          "newValue": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "oldValue": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.ssl.Contact": {
         "properties": {
           "city": {
@@ -12967,23 +12984,6 @@
             "type": "string"
           }
         },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceDateChange": {
-        "properties": {
-          "newValue": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "oldValue": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
-        ],
         "type": "object"
       },
       "de.mittwald.v1.ssl.CertificateType": {
@@ -13047,6 +13047,26 @@
         },
         "type": "object"
       },
+      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
+        "properties": {
+          "changes": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
+            },
+            "type": "array"
+          },
+          "isReplaceable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isReplaceable"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.ssl.CheckReplaceSliceChange": {
         "properties": {
           "addedValues": {
@@ -13093,26 +13113,6 @@
             "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
           }
         },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
-        "properties": {
-          "changes": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
-          },
-          "errors": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
-            },
-            "type": "array"
-          },
-          "isReplaceable": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "isReplaceable"
-        ],
         "type": "object"
       },
       "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
@@ -13189,6 +13189,111 @@
           "certificateData",
           "isCompleted",
           "createdAt"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
+        "properties": {
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "commonName",
+          "contact"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
+        "properties": {
+          "newValue": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.Certificate": {
+        "properties": {
+          "caBundle": {
+            "type": "string"
+          },
+          "certificate": {
+            "type": "string"
+          },
+          "certificateOrderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "certificateRequestId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "certificateType": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
+          },
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "dnsNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "isExpired": {
+            "type": "boolean"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "lastExpirationThresholdHit": {
+            "type": "integer"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "validFrom": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "validTo": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "certificateType",
+          "certificateRequestId",
+          "projectId",
+          "validFrom",
+          "validTo",
+          "certificate",
+          "isExpired",
+          "lastExpirationThresholdHit"
         ],
         "type": "object"
       },
@@ -13327,111 +13432,6 @@
         },
         "required": [
           "message"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
-        "properties": {
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "commonName",
-          "contact"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.Certificate": {
-        "properties": {
-          "caBundle": {
-            "type": "string"
-          },
-          "certificate": {
-            "type": "string"
-          },
-          "certificateOrderId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "certificateRequestId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "certificateType": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
-          },
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "dnsNames": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "isExpired": {
-            "type": "boolean"
-          },
-          "issuer": {
-            "type": "string"
-          },
-          "lastExpirationThresholdHit": {
-            "type": "integer"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "validFrom": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "validTo": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "certificateType",
-          "certificateRequestId",
-          "projectId",
-          "validFrom",
-          "validTo",
-          "certificate",
-          "isExpired",
-          "lastExpirationThresholdHit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
-        "properties": {
-          "newValue": {
-            "type": "string"
-          },
-          "oldValue": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
         ],
         "type": "object"
       },
