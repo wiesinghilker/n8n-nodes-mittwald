@@ -246,6 +246,16 @@
         },
         "description": ""
       },
+      "de.mittwald.v1.ssl.ValidationError": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
+            }
+          }
+        },
+        "description": "An unexpected Error that occurred while handling the request"
+      },
       "de.mittwald.v1.signup.InternalServerError": {
         "content": {
           "application/json": {
@@ -358,16 +368,6 @@
           }
         },
         "description": "An additional second factor code is necessary to process the request."
-      },
-      "de.mittwald.v1.ssl.ValidationError": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
-            }
-          }
-        },
-        "description": "An unexpected Error that occurred while handling the request"
       },
       "de.mittwald.v1.commons.DefaultError": {
         "description": "An unexpected Error that occurred while handling the request",
@@ -1462,6 +1462,14 @@
       "de.mittwald.v1.extension.PricePlan": {
         "description": "PricePlan with Variants.",
         "properties": {
+          "isDowngradeAllowed": {
+            "description": "Indicates whether downgrading between variants is allowed.",
+            "type": "boolean"
+          },
+          "isUpgradeAllowed": {
+            "description": "Indicates whether upgrading between variants is allowed.",
+            "type": "boolean"
+          },
           "variants": {
             "items": {
               "$ref": "#/components/schemas/de.mittwald.v1.extension.Variant"
@@ -1477,6 +1485,10 @@
       "de.mittwald.v1.extension.SubscriptionBasedContract": {
         "description": "A strategy for Contracts that will be paid periodically.",
         "properties": {
+          "contractPeriodEndDate": {
+            "format": "date-time",
+            "type": "string"
+          },
           "currentPrice": {
             "description": "monthly price in Euro Cent",
             "example": 999,
@@ -1488,6 +1500,22 @@
           },
           "interactionRequired": {
             "type": "boolean"
+          },
+          "pendingVariantChange": {
+            "properties": {
+              "effectiveDate": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "targetVariantKey": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "targetVariantKey",
+              "effectiveDate"
+            ],
+            "type": "object"
           },
           "status": {
             "enum": [
@@ -12003,6 +12031,495 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.ssl.Certificate": {
+        "properties": {
+          "caBundle": {
+            "type": "string"
+          },
+          "certificate": {
+            "type": "string"
+          },
+          "certificateOrderId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "certificateRequestId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "certificateType": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
+          },
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "dnsNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "isExpired": {
+            "type": "boolean"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "lastExpirationThresholdHit": {
+            "type": "integer"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "validFrom": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "validTo": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "certificateType",
+          "certificateRequestId",
+          "projectId",
+          "validFrom",
+          "validTo",
+          "certificate",
+          "isExpired",
+          "lastExpirationThresholdHit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateData": {
+        "properties": {
+          "caBundle": {
+            "type": "string"
+          },
+          "certificate": {
+            "type": "string"
+          },
+          "signingRequest": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateError": {
+        "properties": {
+          "message": {
+            "oneOf": [
+              {
+                "description": "Failed to read the certificate.",
+                "enum": [
+                  "certificate_read_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "Failed to decode the certificate.",
+                "enum": [
+                  "certificate_decode_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "An error occurred while parsing the certificate.",
+                "enum": [
+                  "certificate_parsing_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The certificate is self-signed.",
+                "enum": [
+                  "certificate_self_signed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The certificate is not authorized to sign.",
+                "enum": [
+                  "certificate_not_authorized_to_sign"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The certificate has expired.",
+                "enum": [
+                  "certificate_expired"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The Certificate Authority (CA) is not authorized for this name.",
+                "enum": [
+                  "ca_not_authorized_for_this_name"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "There are too many intermediate certificates.",
+                "enum": [
+                  "too_many_intermediates"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The certificate's usage is incompatible.",
+                "enum": [
+                  "incompatible_usage"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The certificate is signed by an unknown authority.",
+                "enum": [
+                  "unknown_authority"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "Failed to read the private key.",
+                "enum": [
+                  "private_key_read_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "Failed to decode the private key.",
+                "enum": [
+                  "private_key_decode_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "An error occurred while parsing the private key.",
+                "enum": [
+                  "private_key_parse_failed"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The private key is encrypted.",
+                "enum": [
+                  "private_key_encrypted"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The private key is not RSA.",
+                "enum": [
+                  "private_key_not_rsa"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "The private key does not match the certificate.",
+                "enum": [
+                  "private_key_mismatch"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "An unknown error occurred related to Cloudflare.",
+                "enum": [
+                  "unknown_cloudflare_error"
+                ],
+                "type": "string"
+              },
+              {
+                "description": "An unknown error occurred.",
+                "enum": [
+                  "unknown"
+                ],
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequest": {
+        "properties": {
+          "certificateData": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateData"
+          },
+          "certificateType": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
+          },
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "dnsNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "isCompleted": {
+            "type": "boolean"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "validFrom": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "validTo": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "certificateType",
+          "projectId",
+          "certificateData",
+          "isCompleted",
+          "createdAt"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
+        "properties": {
+          "certificate": {
+            "type": "string"
+          },
+          "privateKey": {
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "certificate",
+          "privateKey"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateResponse": {
+        "properties": {
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "dnsNames": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "signingRequest": {
+            "type": "string"
+          },
+          "validFrom": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "validTo": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "contact"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
+        "properties": {
+          "commonName": {
+            "type": "string"
+          },
+          "contact": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "commonName",
+          "contact"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CertificateType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceChanges": {
+        "properties": {
+          "commonName": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
+          },
+          "dnsNames": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceSliceChange"
+          },
+          "issuer": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
+          },
+          "validFrom": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
+          },
+          "validTo": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceDateChange": {
+        "properties": {
+          "newValue": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "oldValue": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
+        "properties": {
+          "newValue": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldValue",
+          "newValue"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
+        "properties": {
+          "changes": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
+            },
+            "type": "array"
+          },
+          "isReplaceable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isReplaceable"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.CheckReplaceSliceChange": {
+        "properties": {
+          "addedValues": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "removedValues": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "values": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "values",
+          "addedValues",
+          "removedValues"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.Contact": {
+        "properties": {
+          "city": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "country": {
+            "description": "Two letter abbreviation - country code (ISO 3166-1 Alpha-2).",
+            "example": "DE",
+            "pattern": "^[A-Z]{2}$",
+            "type": "string"
+          },
+          "organizationalUnit": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "de.mittwald.v1.storagespace.StatisticsCategoryKind": {
         "enum": [
           "webspace",
@@ -12945,495 +13462,6 @@
           "storageDesc"
         ],
         "type": "string"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceDateChange": {
-        "properties": {
-          "newValue": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "oldValue": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.Contact": {
-        "properties": {
-          "city": {
-            "type": "string"
-          },
-          "company": {
-            "type": "string"
-          },
-          "country": {
-            "description": "Two letter abbreviation - country code (ISO 3166-1 Alpha-2).",
-            "example": "DE",
-            "pattern": "^[A-Z]{2}$",
-            "type": "string"
-          },
-          "organizationalUnit": {
-            "type": "string"
-          },
-          "state": {
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateType": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateResponse": {
-        "properties": {
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "dnsNames": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "issuer": {
-            "type": "string"
-          },
-          "signingRequest": {
-            "type": "string"
-          },
-          "validFrom": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "validTo": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "contact"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateData": {
-        "properties": {
-          "caBundle": {
-            "type": "string"
-          },
-          "certificate": {
-            "type": "string"
-          },
-          "signingRequest": {
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceCertificateResponse": {
-        "properties": {
-          "changes": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceChanges"
-          },
-          "errors": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateError"
-            },
-            "type": "array"
-          },
-          "isReplaceable": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "isReplaceable"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceSliceChange": {
-        "properties": {
-          "addedValues": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "removedValues": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "values": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "values",
-          "addedValues",
-          "removedValues"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceChanges": {
-        "properties": {
-          "commonName": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
-          },
-          "dnsNames": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceSliceChange"
-          },
-          "issuer": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceFieldChange"
-          },
-          "validFrom": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
-          },
-          "validTo": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceDateChange"
-          }
-        },
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
-        "properties": {
-          "certificate": {
-            "type": "string"
-          },
-          "privateKey": {
-            "type": "string"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "certificate",
-          "privateKey"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequest": {
-        "properties": {
-          "certificateData": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateData"
-          },
-          "certificateType": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
-          },
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "dnsNames": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "isCompleted": {
-            "type": "boolean"
-          },
-          "issuer": {
-            "type": "string"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "validFrom": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "validTo": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "certificateType",
-          "projectId",
-          "certificateData",
-          "isCompleted",
-          "createdAt"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
-        "properties": {
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "commonName",
-          "contact"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CheckReplaceFieldChange": {
-        "properties": {
-          "newValue": {
-            "type": "string"
-          },
-          "oldValue": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "oldValue",
-          "newValue"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.Certificate": {
-        "properties": {
-          "caBundle": {
-            "type": "string"
-          },
-          "certificate": {
-            "type": "string"
-          },
-          "certificateOrderId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "certificateRequestId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "certificateType": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateType"
-          },
-          "commonName": {
-            "type": "string"
-          },
-          "contact": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
-          },
-          "dnsNames": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "isExpired": {
-            "type": "boolean"
-          },
-          "issuer": {
-            "type": "string"
-          },
-          "lastExpirationThresholdHit": {
-            "type": "integer"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "validFrom": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "validTo": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "certificateType",
-          "certificateRequestId",
-          "projectId",
-          "validFrom",
-          "validTo",
-          "certificate",
-          "isExpired",
-          "lastExpirationThresholdHit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.CertificateError": {
-        "properties": {
-          "message": {
-            "oneOf": [
-              {
-                "description": "Failed to read the certificate.",
-                "enum": [
-                  "certificate_read_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "Failed to decode the certificate.",
-                "enum": [
-                  "certificate_decode_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "An error occurred while parsing the certificate.",
-                "enum": [
-                  "certificate_parsing_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The certificate is self-signed.",
-                "enum": [
-                  "certificate_self_signed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The certificate is not authorized to sign.",
-                "enum": [
-                  "certificate_not_authorized_to_sign"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The certificate has expired.",
-                "enum": [
-                  "certificate_expired"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The Certificate Authority (CA) is not authorized for this name.",
-                "enum": [
-                  "ca_not_authorized_for_this_name"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "There are too many intermediate certificates.",
-                "enum": [
-                  "too_many_intermediates"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The certificate's usage is incompatible.",
-                "enum": [
-                  "incompatible_usage"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The certificate is signed by an unknown authority.",
-                "enum": [
-                  "unknown_authority"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "Failed to read the private key.",
-                "enum": [
-                  "private_key_read_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "Failed to decode the private key.",
-                "enum": [
-                  "private_key_decode_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "An error occurred while parsing the private key.",
-                "enum": [
-                  "private_key_parse_failed"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The private key is encrypted.",
-                "enum": [
-                  "private_key_encrypted"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The private key is not RSA.",
-                "enum": [
-                  "private_key_not_rsa"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "The private key does not match the certificate.",
-                "enum": [
-                  "private_key_mismatch"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "An unknown error occurred related to Cloudflare.",
-                "enum": [
-                  "unknown_cloudflare_error"
-                ],
-                "type": "string"
-              },
-              {
-                "description": "An unknown error occurred.",
-                "enum": [
-                  "unknown"
-                ],
-                "type": "string"
-              }
-            ]
-          }
-        },
-        "required": [
-          "message"
-        ],
-        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -34468,6 +34496,147 @@
         ]
       }
     },
+    "/v2/extension-instances/{extensionInstanceId}/contract/variant-change": {
+      "delete": {
+        "operationId": "extension-cancel-extension-variant-change",
+        "parameters": [
+          {
+            "example": "d7238330-e080-494c-a7d4-9b3abf2e0764",
+            "in": "path",
+            "name": "extensionInstanceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "extensionInstanceId": {
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "extensionInstanceId"
+                  ]
+                }
+              }
+            },
+            "description": "The Variant Change was cancelled."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Cancel an Extension Instance Variant Change.",
+        "tags": [
+          "Marketplace"
+        ]
+      },
+      "post": {
+        "operationId": "extension-schedule-extension-variant-change",
+        "parameters": [
+          {
+            "example": "d7238330-e080-494c-a7d4-9b3abf2e0764",
+            "in": "path",
+            "name": "extensionInstanceId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "targetVariantKey": {
+                    "description": "The target variant key to change to.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "effectiveDate": {
+                      "description": "The Date the variant change will be executed.",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "extensionInstanceId": {
+                      "description": "The ID of the Extension Instance the variant change was scheduled for.",
+                      "format": "uuid",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "A Variant Change was scheduled."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Schedule an Extension Instance Variant change for the next possible date.",
+        "tags": [
+          "Marketplace"
+        ]
+      }
+    },
     "/v2/contributors/{contributorId}/extensions/{extensionId}/context": {
       "put": {
         "operationId": "extension-change-context",
@@ -51406,6 +51575,494 @@
         "deprecated": true
       }
     },
+    "/v2/certificates/{certificateId}/actions/check-replace-certificate": {
+      "post": {
+        "operationId": "ssl-check-replace-certificate",
+        "description": "Checks the replacement of a Certificate and shows differences between the current and the new Certificate.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "certificateId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "certificate": {
+                    "type": "string"
+                  },
+                  "privateKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "certificate"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceCertificateResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Check the replacement of a Certificate.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificate-requests": {
+      "post": {
+        "operationId": "ssl-create-certificate-request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateResponse"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.ssl.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Create a CertificateRequest.",
+        "tags": [
+          "Domain"
+        ]
+      },
+      "get": {
+        "operationId": "ssl-list-certificate-requests",
+        "parameters": [
+          {
+            "description": "ID of the Project to list Certificate Requests for.",
+            "examples": {
+              "shortId": {
+                "value": "p-ab1cd2"
+              },
+              "uuid": {
+                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
+              }
+            },
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the Ingress to list Certificate Requests for.",
+            "in": "query",
+            "name": "ingressId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequest"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List CertificateRequests belonging to a Project or an Ingress.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificate-request/{certificateRequestId}": {
+      "delete": {
+        "operationId": "ssl-delete-certificate-request",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "certificateRequestId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Delete a CertificateRequest.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificate/{certificateId}": {
+      "delete": {
+        "operationId": "ssl-delete-certificate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "certificateId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Delete a Certificate.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificate-requests/{certificateRequestId}": {
+      "get": {
+        "operationId": "ssl-get-certificate-request",
+        "parameters": [
+          {
+            "description": "ID of the CertificateRequest to be retrieved.",
+            "in": "path",
+            "name": "certificateRequestId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequest"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get a CertificateRequest.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificates/{certificateId}": {
+      "get": {
+        "operationId": "ssl-get-certificate",
+        "parameters": [
+          {
+            "description": "ID of the SSL Certificate to be retrieved.",
+            "in": "path",
+            "name": "certificateId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.Certificate"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Get a Certificate.",
+        "tags": [
+          "Domain"
+        ]
+      },
+      "put": {
+        "operationId": "ssl-replace-certificate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "certificateId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "certificate": {
+                    "type": "string"
+                  },
+                  "privateKey": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "certificate"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.ssl.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Certificate.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
+    "/v2/certificates": {
+      "get": {
+        "operationId": "ssl-list-certificates",
+        "parameters": [
+          {
+            "description": "ID of the Project to list Certificates for.",
+            "examples": {
+              "shortId": {
+                "value": "p-ab1cd2"
+              },
+              "uuid": {
+                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
+              }
+            },
+            "in": "query",
+            "name": "projectId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "ID of the Ingress to list Certificates for.",
+            "in": "query",
+            "name": "ingressId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.Certificate"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List Certificates belonging to a Project or an Ingress.",
+        "tags": [
+          "Domain"
+        ]
+      }
+    },
     "/v2/projects/{projectId}/storage-space-statistics": {
       "get": {
         "operationId": "storagespace-get-project-statistics",
@@ -56216,570 +56873,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/certificates/{certificateId}/actions/check-replace-certificate": {
-      "post": {
-        "operationId": "ssl-check-replace-certificate",
-        "description": "Checks the replacement of a Certificate and shows differences between the current and the new Certificate.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "certificateId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "certificate": {
-                    "type": "string"
-                  },
-                  "privateKey": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "certificate"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CheckReplaceCertificateResponse"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Check the replacement of a Certificate.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificates/{certificateId}": {
-      "put": {
-        "operationId": "ssl-replace-certificate",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "certificateId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "certificate": {
-                    "type": "string"
-                  },
-                  "privateKey": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "certificate"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.ssl.ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Certificate.",
-        "tags": [
-          "Domain"
-        ]
-      },
-      "get": {
-        "operationId": "ssl-get-certificate",
-        "parameters": [
-          {
-            "description": "ID of the SSL Certificate to be retrieved.",
-            "in": "path",
-            "name": "certificateId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.Certificate"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Get a Certificate.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificate-requests": {
-      "post": {
-        "operationId": "ssl-create-certificate-request",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateRequest"
-                  },
-                  {
-                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest"
-                  }
-                ]
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateResponse"
-                }
-              }
-            },
-            "description": "Created"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.ssl.ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Create a CertificateRequest.",
-        "tags": [
-          "Domain"
-        ]
-      },
-      "get": {
-        "operationId": "ssl-list-certificate-requests",
-        "parameters": [
-          {
-            "description": "ID of the Project to list Certificate Requests for.",
-            "examples": {
-              "shortId": {
-                "value": "p-ab1cd2"
-              },
-              "uuid": {
-                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
-              }
-            },
-            "in": "query",
-            "name": "projectId",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "ID of the Ingress to list Certificate Requests for.",
-            "in": "query",
-            "name": "ingressId",
-            "required": false,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequest"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "List CertificateRequests belonging to a Project or an Ingress.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificate-requests/{certificateRequestId}": {
-      "get": {
-        "operationId": "ssl-get-certificate-request",
-        "parameters": [
-          {
-            "description": "ID of the CertificateRequest to be retrieved.",
-            "in": "path",
-            "name": "certificateRequestId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequest"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Get a CertificateRequest.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificates": {
-      "get": {
-        "operationId": "ssl-list-certificates",
-        "parameters": [
-          {
-            "description": "ID of the Project to list Certificates for.",
-            "examples": {
-              "shortId": {
-                "value": "p-ab1cd2"
-              },
-              "uuid": {
-                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
-              }
-            },
-            "in": "query",
-            "name": "projectId",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "ID of the Ingress to list Certificates for.",
-            "in": "query",
-            "name": "ingressId",
-            "required": false,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.Certificate"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "List Certificates belonging to a Project or an Ingress.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificate-request/{certificateRequestId}": {
-      "delete": {
-        "operationId": "ssl-delete-certificate-request",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "certificateRequestId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Delete a CertificateRequest.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/v2/certificate/{certificateId}": {
-      "delete": {
-        "operationId": "ssl-delete-certificate",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "certificateId",
-            "required": true,
-            "schema": {
-              "format": "uuid",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Delete a Certificate.",
-        "tags": [
-          "Domain"
-        ]
-      }
-    },
-    "/internal-v2/contributors/{contributorId}/actions/reject": {
-      "post": {
-        "operationId": "contributor-reject-contributor-internal",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contributorId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "The Contributor has been rejected."
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Reject a contributor verification request.",
-        "tags": [
-          "Marketplace"
-        ]
-      }
-    },
-    "/internal-v2/contributors/{contributorId}/actions/verify": {
-      "post": {
-        "operationId": "contributor-verify-contributor-internal",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contributorId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "The Contributor has been verified."
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Accept a contributor verification request",
-        "tags": [
-          "Marketplace"
         ]
       }
     }
