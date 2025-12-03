@@ -56875,6 +56875,222 @@
           "Misc"
         ]
       }
+    },
+    "/v2/mail-addresses/": {
+      "get": {
+        "operationId": "mail-list-mail-addresses-for-user",
+        "parameters": [
+          {
+            "description": "ID of the Project to list MailAddresses for.",
+            "examples": {
+              "shortId": {
+                "value": "p-ab1cd2"
+              },
+              "uuid": {
+                "value": "0b15641e-26e2-4e56-9b83-96a995c8bf05"
+              }
+            },
+            "in": "query",
+            "name": "projectId",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Search term to filter MailAddresses for. The fields id, address and mailboxName are searchable. An exact match is performed for id, a partial match for address and mailboxName.",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Whether the MailAddress is a forward address.",
+            "in": "query",
+            "name": "forwardAddress",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether the MailAddress is a catch-all address.",
+            "in": "query",
+            "name": "catchAll",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether the MailAddress has an active auto responder.",
+            "in": "query",
+            "name": "autoResponder",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Whether the MailAddress has a mail-archive.",
+            "in": "query",
+            "name": "mailArchive",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "List of fields how the result should be sorted.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "address.domain",
+                  "address.local",
+                  "updatedAt",
+                  "projectId",
+                  "mailbox.quota",
+                  "mailbox.name",
+                  "mailbox.storageInBytes.current",
+                  "mailbox.storageInBytes.limit"
+                ]
+              },
+              "default": [
+                "address.domain",
+                "address.local"
+              ]
+            },
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Should the result be sorted ascending or descending? You can specify for each field another sorting: sort[0]=foo, order[0]=asc, sort[1]=bar, order[1]=desc.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "default": [
+                "asc",
+                "asc"
+              ]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.mail.MailAddress"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "500": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List MailAddresses.",
+        "tags": [
+          "Mail"
+        ]
+      }
     }
   },
   "security": [
