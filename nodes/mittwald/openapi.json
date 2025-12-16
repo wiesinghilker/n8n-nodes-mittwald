@@ -33271,6 +33271,10 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "deleteIngresses": {
+                    "description": "Whether to also delete the corresponding Ingress and subdomain Ingresses.",
+                    "type": "boolean"
+                  },
                   "deletionDate": {
                     "format": "date-time",
                     "type": "string"
@@ -33924,11 +33928,7 @@
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           }
         },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
+        "security": [],
         "summary": "Suggest a list of domains based on a prompt using AI.",
         "tags": [
           "Domain"
