@@ -57094,6 +57094,62 @@
           "Misc"
         ]
       }
+    },
+    "/v2/customers/{customerId}/ai-hosting/contract": {
+      "get": {
+        "operationId": "contract-get-detail-of-contract-by-ai-hosting",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.contract.Contract"
+                }
+              }
+            },
+            "description": "Return the AI Hosting Contract for the given Customer."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Return the AI Hosting Contract for the given Customer.",
+        "tags": [
+          "Contract"
+        ]
+      }
     }
   },
   "security": [
