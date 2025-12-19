@@ -1548,6 +1548,11 @@
       },
       "de.mittwald.v1.extension.Variant": {
         "properties": {
+          "deletionDeadline": {
+            "description": "deadline for scheduled deletion of extension variant",
+            "format": "date-time",
+            "type": "string"
+          },
           "description": {
             "description": "Description of Variant.",
             "type": "string"
@@ -1562,6 +1567,10 @@
           },
           "isBookingStopped": {
             "description": "stop extension variant from being booked",
+            "type": "boolean"
+          },
+          "isDeletionScheduled": {
+            "description": "deletion of extension variant is scheduled",
             "type": "boolean"
           },
           "key": {
@@ -6503,11 +6512,18 @@
         "description": "A price plan with (multiple) variants, including different prices for different included service descriptions",
         "items": {
           "properties": {
+            "deletionDeadline": {
+              "format": "date-time",
+              "type": "string"
+            },
             "description": {
               "type": "string"
             },
             "isBookingStopped": {
               "description": "If a variant is no longer bookable the existing extension instances will not be removed but no new ones can be created.",
+              "type": "boolean"
+            },
+            "isDeletionScheduled": {
               "type": "boolean"
             },
             "key": {
@@ -6524,7 +6540,8 @@
           "required": [
             "key",
             "priceInCents",
-            "isBookingStopped"
+            "isBookingStopped",
+            "isDeletionScheduled"
           ],
           "type": "object"
         },
@@ -37920,6 +37937,11 @@
                                 ],
                                 "type": "string"
                               },
+                              "deletionDeadline": {
+                                "description": "The date the variant will ne deleted",
+                                "format": "date-time",
+                                "type": "string"
+                              },
                               "variantKey": {
                                 "description": "The key of the variant of the Extension.",
                                 "type": "string"
@@ -49209,6 +49231,9 @@
               }
             },
             "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
           "403": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
