@@ -3799,6 +3799,14 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.cronjob.ConcurrencyPolicy": {
+        "enum": [
+          "allow",
+          "forbid",
+          "replace"
+        ],
+        "type": "string"
+      },
       "de.mittwald.v1.cronjob.Cronjob": {
         "properties": {
           "active": {
@@ -3807,6 +3815,9 @@
           "appId": {
             "format": "uuid",
             "type": "string"
+          },
+          "concurrencyPolicy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.cronjob.ConcurrencyPolicy"
           },
           "createdAt": {
             "format": "date-time",
@@ -3855,6 +3866,9 @@
           },
           "shortId": {
             "example": "cron-bd26li",
+            "type": "string"
+          },
+          "timeZone": {
             "type": "string"
           },
           "timeout": {
@@ -3914,6 +3928,11 @@
             "deprecated": true,
             "format": "date-time",
             "type": "string"
+          },
+          "exitCode": {
+            "example": 0,
+            "format": "int32",
+            "type": "integer"
           },
           "id": {
             "example": "cron-bd26li-28027320",
@@ -3990,6 +4009,9 @@
             "format": "uuid",
             "type": "string"
           },
+          "concurrencyPolicy": {
+            "$ref": "#/components/schemas/de.mittwald.v1.cronjob.ConcurrencyPolicy"
+          },
           "description": {
             "example": "i am a cronjob",
             "type": "string"
@@ -4014,6 +4036,10 @@
           },
           "interval": {
             "example": "*/5 * * * *",
+            "type": "string"
+          },
+          "timeZone": {
+            "example": "Europe/Berlin",
             "type": "string"
           },
           "timeout": {
@@ -4289,8 +4315,7 @@
           },
           "accessLevel": {
             "enum": [
-              "full",
-              "readonly"
+              "full"
             ],
             "type": "string"
           },
@@ -19806,6 +19831,62 @@
         ]
       }
     },
+    "/v2/customers/{customerId}/ai-hosting/contract": {
+      "get": {
+        "operationId": "contract-get-detail-of-contract-by-ai-hosting",
+        "parameters": [
+          {
+            "examples": {
+              "shortId": {
+                "value": "1000026"
+              },
+              "uuid": {
+                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
+              }
+            },
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.contract.Contract"
+                }
+              }
+            },
+            "description": "Return the AI Hosting Contract for the given Customer."
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Return the AI Hosting Contract for the given Customer.",
+        "tags": [
+          "Contract"
+        ]
+      }
+    },
     "/v2/certificates/{certificateId}/contract": {
       "get": {
         "operationId": "contract-get-detail-of-contract-by-certificate",
@@ -22652,54 +22733,6 @@
         ]
       }
     },
-    "/v2/cronjobs/{cronjobId}/executions/{executionId}/actions/abort": {
-      "post": {
-        "operationId": "cronjob-abort-execution",
-        "parameters": [
-          {
-            "description": "ID of the CronjobExecution to be aborted.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "executionId",
-            "required": true,
-            "schema": {
-              "example": "cron-bd26li-28027320",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Abort a CronjobExecution.",
-        "tags": [
-          "Cronjob"
-        ]
-      }
-    },
     "/v2/projects/{projectId}/cronjobs": {
       "post": {
         "operationId": "cronjob-create-cronjob",
@@ -23170,6 +23203,9 @@
                   "active": {
                     "type": "boolean"
                   },
+                  "concurrencyPolicy": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.cronjob.ConcurrencyPolicy"
+                  },
                   "description": {
                     "example": "i am a cronjob",
                     "type": "string"
@@ -23194,6 +23230,9 @@
                   },
                   "interval": {
                     "example": "*/5 * * * *",
+                    "type": "string"
+                  },
+                  "timeZone": {
                     "type": "string"
                   },
                   "timeout": {
@@ -26768,6 +26807,55 @@
         "tags": [
           "Contract"
         ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/executions/{executionId}/actions/abort": {
+      "post": {
+        "operationId": "deprecated-cronjob-abort-execution",
+        "parameters": [
+          {
+            "description": "ID of the CronjobExecution to be aborted.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "executionId",
+            "required": true,
+            "schema": {
+              "example": "cron-bd26li-28027320",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Abort a CronjobExecution. Deprecated because this feature is not available at this time.",
+        "tags": [
+          "Cronjob"
+        ],
+        "deprecated": true
       }
     },
     "/v2/customer/{customerId}/actions/leave": {
@@ -45671,6 +45759,41 @@
         ]
       }
     },
+    "/v2/time-zones": {
+      "get": {
+        "operationId": "miscellaneous-list-time-zones",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List valid time zones.",
+        "tags": [
+          "Misc"
+        ]
+      }
+    },
     "/v2/newsletter-subscriptions/self": {
       "get": {
         "operationId": "newsletter-get-info",
@@ -57126,62 +57249,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/customers/{customerId}/ai-hosting/contract": {
-      "get": {
-        "operationId": "contract-get-detail-of-contract-by-ai-hosting",
-        "parameters": [
-          {
-            "examples": {
-              "shortId": {
-                "value": "1000026"
-              },
-              "uuid": {
-                "value": "13eac206-ada6-4ac8-a4c0-21b263df6cbf"
-              }
-            },
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.contract.Contract"
-                }
-              }
-            },
-            "description": "Return the AI Hosting Contract for the given Customer."
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Return the AI Hosting Contract for the given Customer.",
-        "tags": [
-          "Contract"
         ]
       }
     }
