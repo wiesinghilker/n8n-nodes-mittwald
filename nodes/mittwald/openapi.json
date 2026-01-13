@@ -47727,6 +47727,9 @@
           "403": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
           },
