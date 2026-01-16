@@ -425,6 +425,154 @@
       }
     },
     "schemas": {
+      "de.mittwald.v1.aihosting.ContainerMeta": {
+        "properties": {
+          "containerId": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "ingressId": {
+            "type": "string"
+          },
+          "stackId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "created",
+              "requested",
+              "failed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.Key": {
+        "properties": {
+          "containerMeta": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.ContainerMeta"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "isBlocked": {
+            "default": false,
+            "description": "Indicates whether the key is blocked.",
+            "type": "boolean"
+          },
+          "key": {
+            "description": "The secret API key which is required for authentication with the AI hosting.",
+            "type": "string"
+          },
+          "keyId": {
+            "description": "Auto generated uuid to identify keys in requests.",
+            "type": "string"
+          },
+          "models": {
+            "description": "An array of LLM model identifiers enabled for this key.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "rateLimit": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.RateLimit"
+          },
+          "tokenUsage": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TokenUsage"
+          }
+        },
+        "required": [
+          "keyId",
+          "key",
+          "models",
+          "name",
+          "isBlocked",
+          "tokenUsage",
+          "rateLimit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.Model": {
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "docLink": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "termsOfServiceLink": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "displayName",
+          "docLink",
+          "termsOfServiceLink"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.RateLimit": {
+        "description": "The number of allowed requests per unit. Limits are shared across all keys within the same project.",
+        "properties": {
+          "allowedRequestsPerUnit": {
+            "type": "integer"
+          },
+          "unit": {
+            "enum": [
+              "minute"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "allowedRequestsPerUnit",
+          "unit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.TokenUsage": {
+        "properties": {
+          "planLimit": {
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "tariffLimit": {
+            "deprecated": true,
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "used": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "used",
+          "tariffLimit",
+          "planLimit"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.app.Action": {
         "description": "An Action is a string that describes a runtime concerning action which can be executed on an AppInstallation or an  App  can be capable of.",
         "enum": [
@@ -9979,6 +10127,70 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.order.AIHostingOrderPreview": {
+        "properties": {
+          "monthlyTokens": {
+            "example": 2000000,
+            "type": "integer"
+          },
+          "requestsPerMinute": {
+            "example": 120,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "requestsPerMinute",
+          "monthlyTokens"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.AIHostingOrder": {
+        "properties": {
+          "customerId": {
+            "example": "0f5ec9cd-1b1b-4850-9061-fcebe765c62d",
+            "type": "string"
+          },
+          "monthlyTokens": {
+            "example": 2000000,
+            "type": "integer"
+          },
+          "requestsPerMinute": {
+            "example": 120,
+            "type": "integer"
+          },
+          "useFreeTrial": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "customerId",
+          "requestsPerMinute",
+          "monthlyTokens"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.order.AIHostingTariffChange": {
+        "properties": {
+          "contractId": {
+            "example": "7439a725-1d7d-4f7e-bcdf-40900daf94cf",
+            "type": "string"
+          },
+          "monthlyTokens": {
+            "example": 50000000,
+            "type": "integer"
+          },
+          "requestsPerMinute": {
+            "example": 300,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contractId",
+          "requestsPerMinute",
+          "monthlyTokens"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.order.ArticleAddons": {
         "properties": {
           "hidden": {
@@ -10450,6 +10662,18 @@
           "CONTRACT_CHANGE"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.order.AIHostingOrderPreviewResponse": {
+        "properties": {
+          "totalPrice": {
+            "example": 500,
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalPrice"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.order.LeadFyndrOrderPreviewResponse": {
         "properties": {
@@ -13388,205 +13612,7 @@
         ],
         "type": "string"
       },
-      "de.mittwald.v1.order.AIHostingOrder": {
-        "properties": {
-          "customerId": {
-            "example": "0f5ec9cd-1b1b-4850-9061-fcebe765c62d",
-            "type": "string"
-          },
-          "monthlyTokens": {
-            "example": 2000000,
-            "type": "integer"
-          },
-          "requestsPerMinute": {
-            "example": 120,
-            "type": "integer"
-          },
-          "useFreeTrial": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "customerId",
-          "requestsPerMinute",
-          "monthlyTokens"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.order.AIHostingOrderPreview": {
-        "properties": {
-          "monthlyTokens": {
-            "example": 2000000,
-            "type": "integer"
-          },
-          "requestsPerMinute": {
-            "example": 120,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "requestsPerMinute",
-          "monthlyTokens"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.order.AIHostingOrderPreviewResponse": {
-        "properties": {
-          "totalPrice": {
-            "example": 500,
-            "type": "number"
-          }
-        },
-        "required": [
-          "totalPrice"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.order.AIHostingTariffChange": {
-        "properties": {
-          "contractId": {
-            "example": "7439a725-1d7d-4f7e-bcdf-40900daf94cf",
-            "type": "string"
-          },
-          "monthlyTokens": {
-            "example": 50000000,
-            "type": "integer"
-          },
-          "requestsPerMinute": {
-            "example": 300,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "contractId",
-          "requestsPerMinute",
-          "monthlyTokens"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.ContainerMeta": {
-        "properties": {
-          "containerId": {
-            "type": "string"
-          },
-          "errorMessage": {
-            "type": "string"
-          },
-          "ingressId": {
-            "type": "string"
-          },
-          "stackId": {
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "created",
-              "requested",
-              "failed"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "status"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.Key": {
-        "properties": {
-          "containerMeta": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.ContainerMeta"
-          },
-          "customerId": {
-            "type": "string"
-          },
-          "isBlocked": {
-            "default": false,
-            "description": "Indicates whether the key is blocked.",
-            "type": "boolean"
-          },
-          "key": {
-            "description": "The secret API key which is required for authentication with the AI hosting.",
-            "type": "string"
-          },
-          "keyId": {
-            "description": "Auto generated uuid to identify keys in requests.",
-            "type": "string"
-          },
-          "models": {
-            "description": "An array of LLM model identifiers enabled for this key.",
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "name": {
-            "type": "string"
-          },
-          "projectId": {
-            "type": "string"
-          },
-          "rateLimit": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.RateLimit"
-          },
-          "tokenUsage": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TokenUsage"
-          }
-        },
-        "required": [
-          "keyId",
-          "key",
-          "models",
-          "name",
-          "isBlocked",
-          "tokenUsage",
-          "rateLimit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.Model": {
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "docLink": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "termsOfServiceLink": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "displayName",
-          "docLink",
-          "termsOfServiceLink"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.RateLimit": {
-        "description": "The number of allowed requests per unit. Limits are shared across all keys within the same project.",
-        "properties": {
-          "allowedRequestsPerUnit": {
-            "type": "integer"
-          },
-          "unit": {
-            "enum": [
-              "minute"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "allowedRequestsPerUnit",
-          "unit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.TariffOptions": {
+      "de.mittwald.v1.aihosting.PlanOptions": {
         "properties": {
           "customerId": {
             "type": "string"
@@ -13596,7 +13622,7 @@
             "type": "string"
           },
           "keys": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TariffUsage"
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsage"
           },
           "nextTokenReset": {
             "format": "date-time",
@@ -13606,7 +13632,7 @@
             "$ref": "#/components/schemas/de.mittwald.v1.aihosting.RateLimit"
           },
           "tokens": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TariffUsageBig"
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsageBig"
           },
           "topUsages": {
             "items": {
@@ -13643,13 +13669,18 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.aihosting.TariffUsage": {
+      "de.mittwald.v1.aihosting.PlanUsage": {
         "properties": {
           "available": {
             "minimum": -1,
             "type": "integer"
           },
+          "planLimit": {
+            "minimum": -1,
+            "type": "integer"
+          },
           "tariffLimit": {
+            "deprecated": true,
             "minimum": -1,
             "type": "integer"
           },
@@ -13661,18 +13692,25 @@
         "required": [
           "used",
           "available",
-          "tariffLimit"
+          "tariffLimit",
+          "planLimit"
         ],
         "type": "object"
       },
-      "de.mittwald.v1.aihosting.TariffUsageBig": {
+      "de.mittwald.v1.aihosting.PlanUsageBig": {
         "properties": {
           "available": {
             "format": "int64",
             "minimum": -1,
             "type": "integer"
           },
+          "planLimit": {
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
           "tariffLimit": {
+            "deprecated": true,
             "format": "int64",
             "minimum": -1,
             "type": "integer"
@@ -13686,26 +13724,8 @@
         "required": [
           "used",
           "available",
-          "tariffLimit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.TokenUsage": {
-        "properties": {
-          "tariffLimit": {
-            "format": "int64",
-            "minimum": -1,
-            "type": "integer"
-          },
-          "used": {
-            "format": "int64",
-            "minimum": 0,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "used",
-          "tariffLimit"
+          "tariffLimit",
+          "planLimit"
         ],
         "type": "object"
       },
@@ -13917,6 +13937,779 @@
     }
   },
   "paths": {
+    "/v2/customers/{customerId}/ai-hosting-keys": {
+      "post": {
+        "operationId": "ai-hosting-customer-create-key",
+        "description": "Creates a new key. Can be linked with a project to directly create web-ui container.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "createWebuiContainer": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "minLength": 5,
+                    "type": "string"
+                  },
+                  "projectId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Creates a new key.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "get": {
+        "operationId": "ai-hosting-customer-get-keys",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List of keys of a customer.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get a list of already created keys.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/customers/{customerId}/ai-hosting-keys/{keyId}": {
+      "delete": {
+        "operationId": "ai-hosting-customer-delete-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Delete a key for a customer.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "get": {
+        "operationId": "ai-hosting-customer-get-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": "The key of a customer.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get a key of a customer.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "put": {
+        "operationId": "ai-hosting-customer-update-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "createWebuiContainer": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "minLength": 5,
+                    "type": "string"
+                  },
+                  "projectId": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "description": "",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Update a key for a customer.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/customers/{customerId}/ai-hosting": {
+      "get": {
+        "operationId": "ai-hosting-customer-get-usage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "customerId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "topUsageCount",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanOptions"
+                }
+              }
+            },
+            "description": "The customer usage and plan.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get ai hosting plan and usages of a customer.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/ai-hosting-models": {
+      "get": {
+        "operationId": "ai-hosting-get-models",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Model"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List of currently active models.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get a list of currently active models.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/ai-hosting-keys": {
+      "post": {
+        "operationId": "ai-hosting-project-create-key",
+        "description": "Creates a new key for a project. Same as the customer route but with required projectId. And project users can create it.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "createWebuiContainer": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "minLength": 5,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Creates a new key for a project.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "get": {
+        "operationId": "ai-hosting-project-get-keys",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "List of keys of a project.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get a list of keys of a project.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/ai-hosting-keys/{keyId}": {
+      "delete": {
+        "operationId": "ai-hosting-project-delete-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Delete a key for a project.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "get": {
+        "operationId": "ai-hosting-project-get-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": "The key of a project.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get a key of a project.",
+        "tags": [
+          "AI hosting"
+        ]
+      },
+      "put": {
+        "operationId": "ai-hosting-project-update-key",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "createWebuiContainer": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "minLength": 5,
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "description": "",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Update a key for a project.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/ai-hosting": {
+      "get": {
+        "operationId": "ai-hosting-project-get-usage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "keys": {
+                      "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsage"
+                    },
+                    "nextTokenReset": {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "projectId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "keys",
+                    "projectId"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The project usage and plan.\n"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get ai hosting plan and usages of a project. Same as the customer route, but less details.",
+        "tags": [
+          "AI hosting"
+        ]
+      }
+    },
     "/v2/appinstallations/{appInstallationId}/actions/{action}": {
       "post": {
         "parameters": [
@@ -22093,32 +22886,62 @@
       },
       "get": {
         "operationId": "conversation-list-conversations",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.conversation.Conversation"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "The conversations list ordered by creation date"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get all conversation the authenticated user has created or has access to.",
-        "tags": [
-          "Conversation"
-        ],
         "parameters": [
+          {
+            "description": "keyword or \"phrase\" search",
+            "in": "query",
+            "name": "fullTextSearch",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "items": {
+                "enum": [
+                  "open",
+                  "closed"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
           {
             "name": "sort",
             "in": "query",
@@ -22131,7 +22954,6 @@
                   "createdAt",
                   "lastMessage.createdAt",
                   "title",
-                  "priority",
                   "shortId",
                   "conversationId"
                 ]
@@ -22161,6 +22983,57 @@
             },
             "required": false
           }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/de.mittwald.v1.conversation.Conversation"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The conversations list ordered by creation date",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "summary": "Get all conversation the authenticated user has created or has access to.",
+        "tags": [
+          "Conversation"
         ]
       }
     },
@@ -57191,779 +58064,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/customers/{customerId}/ai-hosting-keys/{keyId}": {
-      "delete": {
-        "operationId": "ai-hosting-customer-delete-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Delete a key for a customer.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "get": {
-        "operationId": "ai-hosting-customer-get-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": "The key of a customer.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get a key of a customer.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "put": {
-        "operationId": "ai-hosting-customer-update-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "createWebuiContainer": {
-                    "type": "boolean"
-                  },
-                  "name": {
-                    "minLength": 5,
-                    "type": "string"
-                  },
-                  "projectId": {
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              }
-            }
-          },
-          "description": "",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": ""
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Update a key for a customer.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/projects/{projectId}/ai-hosting-keys/{keyId}": {
-      "delete": {
-        "operationId": "ai-hosting-project-delete-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Delete a key for a project.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "get": {
-        "operationId": "ai-hosting-project-get-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": "The key of a project.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get a key of a project.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "put": {
-        "operationId": "ai-hosting-project-update-key",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "keyId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "createWebuiContainer": {
-                    "type": "boolean"
-                  },
-                  "name": {
-                    "minLength": 5,
-                    "type": "string"
-                  }
-                },
-                "type": "object"
-              }
-            }
-          },
-          "description": "",
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": ""
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Update a key for a project.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/customers/{customerId}/ai-hosting-keys": {
-      "get": {
-        "operationId": "ai-hosting-customer-get-keys",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "List of keys of a customer.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get a list of already created keys.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "post": {
-        "operationId": "ai-hosting-customer-create-key",
-        "description": "Creates a new key. Can be linked with a project to directly create web-ui container.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "createWebuiContainer": {
-                    "type": "boolean"
-                  },
-                  "name": {
-                    "minLength": 5,
-                    "type": "string"
-                  },
-                  "projectId": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "name"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": ""
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Creates a new key.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/customers/{customerId}/ai-hosting": {
-      "get": {
-        "operationId": "ai-hosting-customer-get-usage",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "customerId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "topUsageCount",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TariffOptions"
-                }
-              }
-            },
-            "description": "The customer usage and tariff.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get ai hosting tariff and usages of a customer.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/ai-hosting-models": {
-      "get": {
-        "operationId": "ai-hosting-get-models",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Model"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "List of currently active models.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get a list of currently active models.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/projects/{projectId}/ai-hosting-keys": {
-      "get": {
-        "operationId": "ai-hosting-project-get-keys",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                  },
-                  "type": "array"
-                }
-              }
-            },
-            "description": "List of keys of a project.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get a list of keys of a project.",
-        "tags": [
-          "AI hosting"
-        ]
-      },
-      "post": {
-        "operationId": "ai-hosting-project-create-key",
-        "description": "Creates a new key for a project. Same as the customer route but with required projectId. And project users can create it.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "createWebuiContainer": {
-                    "type": "boolean"
-                  },
-                  "name": {
-                    "minLength": 5,
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "name"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "",
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/de.mittwald.v1.aihosting.Key"
-                }
-              }
-            },
-            "description": ""
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Creates a new key for a project.",
-        "tags": [
-          "AI hosting"
-        ]
-      }
-    },
-    "/v2/projects/{projectId}/ai-hosting": {
-      "get": {
-        "operationId": "ai-hosting-project-get-usage",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "projectId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "keys": {
-                      "$ref": "#/components/schemas/de.mittwald.v1.aihosting.TariffUsage"
-                    },
-                    "nextTokenReset": {
-                      "format": "date-time",
-                      "type": "string"
-                    },
-                    "projectId": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "keys",
-                    "projectId"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "The project usage and tariff.\n"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "summary": "Get ai hosting tariff and usages of a project. Same as the customer route, but less details.",
-        "tags": [
-          "AI hosting"
         ]
       }
     }
