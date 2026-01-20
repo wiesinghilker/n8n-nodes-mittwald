@@ -34667,6 +34667,10 @@
                   "properties": {
                     "authCode": {
                       "type": "string"
+                    },
+                    "expirationDate": {
+                      "format": "date-time",
+                      "type": "string"
                     }
                   },
                   "required": [
