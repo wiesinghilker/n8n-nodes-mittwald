@@ -528,6 +528,110 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.aihosting.PlanOptions": {
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "deletedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "keys": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsage"
+          },
+          "nextTokenReset": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "rateLimit": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.RateLimit"
+          },
+          "tokens": {
+            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsageBig"
+          },
+          "topUsages": {
+            "items": {
+              "properties": {
+                "keyId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "tokenUsed": {
+                  "format": "int64",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "name",
+                "tokenUsed"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "customerId",
+          "keys",
+          "tokens",
+          "rateLimit",
+          "nextTokenReset"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.PlanUsageBig": {
+        "properties": {
+          "available": {
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "planLimit": {
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "used": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "used",
+          "available",
+          "planLimit"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.aihosting.PlanUsage": {
+        "properties": {
+          "available": {
+            "minimum": -1,
+            "type": "integer"
+          },
+          "planLimit": {
+            "minimum": -1,
+            "type": "integer"
+          },
+          "used": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "used",
+          "available",
+          "planLimit"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.aihosting.RateLimit": {
         "description": "The number of allowed requests per unit. Limits are shared across all keys within the same project.",
         "properties": {
@@ -3958,6 +4062,12 @@
             "type": "boolean"
           },
           "appId": {
+            "deprecated": true,
+            "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "appInstallationId": {
             "format": "uuid",
             "type": "string"
           },
@@ -4151,6 +4261,12 @@
             "type": "boolean"
           },
           "appId": {
+            "deprecated": true,
+            "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+            "format": "uuid",
+            "type": "string"
+          },
+          "appInstallationId": {
             "format": "uuid",
             "type": "string"
           },
@@ -13604,110 +13720,6 @@
           "storageDesc"
         ],
         "type": "string"
-      },
-      "de.mittwald.v1.aihosting.PlanOptions": {
-        "properties": {
-          "customerId": {
-            "type": "string"
-          },
-          "deletedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "keys": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsage"
-          },
-          "nextTokenReset": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "rateLimit": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.RateLimit"
-          },
-          "tokens": {
-            "$ref": "#/components/schemas/de.mittwald.v1.aihosting.PlanUsageBig"
-          },
-          "topUsages": {
-            "items": {
-              "properties": {
-                "keyId": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "projectId": {
-                  "type": "string"
-                },
-                "tokenUsed": {
-                  "format": "int64",
-                  "type": "integer"
-                }
-              },
-              "required": [
-                "name",
-                "tokenUsed"
-              ],
-              "type": "object"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "customerId",
-          "keys",
-          "tokens",
-          "rateLimit",
-          "nextTokenReset"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.PlanUsage": {
-        "properties": {
-          "available": {
-            "minimum": -1,
-            "type": "integer"
-          },
-          "planLimit": {
-            "minimum": -1,
-            "type": "integer"
-          },
-          "used": {
-            "minimum": 0,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "used",
-          "available",
-          "planLimit"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.aihosting.PlanUsageBig": {
-        "properties": {
-          "available": {
-            "format": "int64",
-            "minimum": -1,
-            "type": "integer"
-          },
-          "planLimit": {
-            "format": "int64",
-            "minimum": -1,
-            "type": "integer"
-          },
-          "used": {
-            "format": "int64",
-            "minimum": 0,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "used",
-          "available",
-          "planLimit"
-        ],
-        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -24459,6 +24471,71 @@
     },
     "/v2/cronjobs/{cronjobId}/app-id": {
       "patch": {
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the app to set.",
+          "required": true
+        },
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
+        ],
+        "description": "This route is deprecated. Please use /v2/cronjobs/{cronjobId}/app-installation-id instead.",
+        "deprecated": true
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/app-installation-id": {
+      "patch": {
         "operationId": "cronjob-update-cronjob-app-id",
         "parameters": [
           {
@@ -24477,6 +24554,12 @@
               "schema": {
                 "properties": {
                   "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
                     "format": "uuid",
                     "type": "string"
                   }
@@ -24513,7 +24596,7 @@
             "de.mittwald.v1.commons.AccessToken": []
           }
         ],
-        "summary": "Update a Cronjob's app id.",
+        "summary": "Update a Cronjob's app installation id.",
         "tags": [
           "Cronjob"
         ]
