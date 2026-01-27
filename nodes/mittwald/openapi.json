@@ -24469,139 +24469,6 @@
         ]
       }
     },
-    "/v2/cronjobs/{cronjobId}/app-id": {
-      "patch": {
-        "parameters": [
-          {
-            "description": "ID of the Cronjob to update.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "appId": {
-                    "deprecated": true,
-                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
-                    "format": "uuid",
-                    "type": "string"
-                  },
-                  "appInstallationId": {
-                    "format": "uuid",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "appId"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "ID of the app to set.",
-          "required": true
-        },
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Cronjob's app installation id.",
-        "tags": [
-          "Cronjob"
-        ],
-        "description": "This route is deprecated. Please use /v2/cronjobs/{cronjobId}/app-installation-id instead.",
-        "deprecated": true
-      }
-    },
-    "/v2/cronjobs/{cronjobId}/app-installation-id": {
-      "patch": {
-        "operationId": "cronjob-update-cronjob-app-id",
-        "parameters": [
-          {
-            "description": "ID of the Cronjob to update.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "appId": {
-                    "deprecated": true,
-                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
-                    "format": "uuid",
-                    "type": "string"
-                  },
-                  "appInstallationId": {
-                    "format": "uuid",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "appId"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "ID of the app to set.",
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Cronjob's app installation id.",
-        "tags": [
-          "Cronjob"
-        ]
-      }
-    },
     "/v2/customer-invites/{customerInviteId}/actions/accept": {
       "post": {
         "operationId": "customer-accept-customer-invite",
@@ -35988,6 +35855,72 @@
         ]
       }
     },
+    "/v2/extensions/{extensionId}/contexts/{contextId}/chargability": {
+      "get": {
+        "operationId": "extension-check-extension-is-chargable",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "extensionId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "contextId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "variantKey",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "chargeability": {
+                      "$ref": "#/components/schemas/de.mittwald.v1.marketplace.ExtensionInstanceChargeability"
+                    }
+                  },
+                  "required": [
+                    "chargeability"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The calculated chargeability of an extension instance to be created."
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [],
+        "summary": "Check if an Extension is unchargable for this specific context or if it must be charged.",
+        "tags": [
+          "Marketplace"
+        ]
+      }
+    },
     "/v2/extension-instances/{extensionInstanceId}/scopes": {
       "patch": {
         "operationId": "extension-consent-to-extension-scopes",
@@ -36025,7 +35958,7 @@
         },
         "responses": {
           "204": {
-            "description": "NoContent"
+            "description": "The scopes have been applied."
           },
           "400": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
@@ -58131,6 +58064,201 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/app-id": {
+      "patch": {
+        "deprecated": true,
+        "description": "This route is deprecated. Please use /v2/cronjobs/{cronjobId}/app-installation-id instead.",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the app to set.",
+          "required": true
+        },
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/app-installation-id": {
+      "patch": {
+        "operationId": "cronjob-update-cronjob-app-id-deprecated",
+        "deprecated": true,
+        "description": "Deprecated by PUT /v2/cronjobs/{cronjobId}/app-installation-id.",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the app to set.",
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
+        ]
+      },
+      "put": {
+        "operationId": "cronjob-replace-cronjob-app-installation-id",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appInstallationId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the AppInstallation to set.",
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
         ]
       }
     }
