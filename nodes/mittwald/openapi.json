@@ -13742,15 +13742,12 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest": {
+      "de.mittwald.v1.backup.ProjectBackupRestoreDatabase": {
         "properties": {
           "databaseBackupDump": {
-            "description": "Database backup dump from the backup to restore from.",
-            "example": "dbdump-mysql-123456",
             "type": "string"
           },
           "targetDatabaseId": {
-            "description": "ID of the target database to restore to.",
             "format": "uuid",
             "type": "string"
           }
@@ -13761,12 +13758,15 @@
         ],
         "type": "object"
       },
-      "de.mittwald.v1.backup.ProjectBackupRestoreDatabase": {
+      "de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest": {
         "properties": {
           "databaseBackupDump": {
+            "description": "Database backup dump from the backup to restore from.",
+            "example": "dbdump-mysql-123456",
             "type": "string"
           },
           "targetDatabaseId": {
+            "description": "ID of the target database to restore to.",
             "format": "uuid",
             "type": "string"
           }
