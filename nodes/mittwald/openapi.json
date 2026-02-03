@@ -1599,6 +1599,90 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest": {
+        "properties": {
+          "databaseBackupDump": {
+            "description": "Database backup dump from the backup to restore from.",
+            "example": "dbdump-mysql-123456",
+            "type": "string"
+          },
+          "targetDatabaseId": {
+            "description": "ID of the target database to restore to.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "databaseBackupDump",
+          "targetDatabaseId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestoreDatabase": {
+        "properties": {
+          "databaseBackupDump": {
+            "type": "string"
+          },
+          "targetDatabaseId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "databaseBackupDump",
+          "targetDatabaseId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestorePathDeprecated": {
+        "properties": {
+          "clearTargetPath": {
+            "default": false,
+            "type": "boolean"
+          },
+          "determinedTargetPath": {
+            "type": "string"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePhase"
+          },
+          "sourcePath": {
+            "type": "string"
+          },
+          "targetPath": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "phase",
+          "sourcePath",
+          "determinedTargetPath",
+          "clearTargetPath"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestorePathRequestDeprecated": {
+        "properties": {
+          "clearTargetPath": {
+            "default": false,
+            "description": "Whether to clear the target path before restoring. If true, existing files in the target path will be deleted before the restore. If false, existing files will be kept and may be overwritten if they exist in the backup.",
+            "type": "boolean"
+          },
+          "sourcePath": {
+            "example": "/html/mainApp/config/",
+            "type": "string"
+          },
+          "targetPath": {
+            "description": "Target path where the source path should be restored to. If not set, the target path will be determined to equal the origin source. The target path should always be a folder, no files allowed here.",
+            "example": "/html/mainApp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourcePath"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.backup.ProjectBackupRestorePathRequest": {
         "properties": {
           "clearTargetPath": {
@@ -1650,6 +1734,47 @@
           "sourcePaths",
           "determinedTargetPath",
           "clearTargetPath"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestorePhase": {
+        "enum": [
+          "running",
+          "completed"
+        ],
+        "type": "string"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestoreRequest": {
+        "properties": {
+          "databaseRestores": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest"
+            },
+            "type": "array"
+          },
+          "pathRestore": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePathRequest"
+          }
+        },
+        "type": "object"
+      },
+      "de.mittwald.v1.backup.ProjectBackupRestore": {
+        "properties": {
+          "databaseRestores": {
+            "items": {
+              "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreDatabase"
+            },
+            "type": "array"
+          },
+          "pathRestore": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePath"
+          },
+          "phase": {
+            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePhase"
+          }
+        },
+        "required": [
+          "phase"
         ],
         "type": "object"
       },
@@ -4467,6 +4592,9 @@
             "type": "boolean"
           },
           "isInDefaultOfPayment": {
+            "type": "boolean"
+          },
+          "isMailAddressInvalid": {
             "type": "boolean"
           },
           "levelOfUndeliverableDunningNotice": {
@@ -13722,131 +13850,6 @@
         ],
         "type": "string"
       },
-      "de.mittwald.v1.backup.ProjectBackupRestore": {
-        "properties": {
-          "databaseRestores": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreDatabase"
-            },
-            "type": "array"
-          },
-          "pathRestore": {
-            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePath"
-          },
-          "phase": {
-            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePhase"
-          }
-        },
-        "required": [
-          "phase"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestoreDatabase": {
-        "properties": {
-          "databaseBackupDump": {
-            "type": "string"
-          },
-          "targetDatabaseId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "databaseBackupDump",
-          "targetDatabaseId"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest": {
-        "properties": {
-          "databaseBackupDump": {
-            "description": "Database backup dump from the backup to restore from.",
-            "example": "dbdump-mysql-123456",
-            "type": "string"
-          },
-          "targetDatabaseId": {
-            "description": "ID of the target database to restore to.",
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "databaseBackupDump",
-          "targetDatabaseId"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestorePathDeprecated": {
-        "properties": {
-          "clearTargetPath": {
-            "default": false,
-            "type": "boolean"
-          },
-          "determinedTargetPath": {
-            "type": "string"
-          },
-          "phase": {
-            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePhase"
-          },
-          "sourcePath": {
-            "type": "string"
-          },
-          "targetPath": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "phase",
-          "sourcePath",
-          "determinedTargetPath",
-          "clearTargetPath"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestorePathRequestDeprecated": {
-        "properties": {
-          "clearTargetPath": {
-            "default": false,
-            "description": "Whether to clear the target path before restoring. If true, existing files in the target path will be deleted before the restore. If false, existing files will be kept and may be overwritten if they exist in the backup.",
-            "type": "boolean"
-          },
-          "sourcePath": {
-            "example": "/html/mainApp/config/",
-            "type": "string"
-          },
-          "targetPath": {
-            "description": "Target path where the source path should be restored to. If not set, the target path will be determined to equal the origin source. The target path should always be a folder, no files allowed here.",
-            "example": "/html/mainApp",
-            "type": "string"
-          }
-        },
-        "required": [
-          "sourcePath"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestorePhase": {
-        "enum": [
-          "running",
-          "completed"
-        ],
-        "type": "string"
-      },
-      "de.mittwald.v1.backup.ProjectBackupRestoreRequest": {
-        "properties": {
-          "databaseRestores": {
-            "items": {
-              "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreDatabaseRequest"
-            },
-            "type": "array"
-          },
-          "pathRestore": {
-            "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePathRequest"
-          }
-        },
-        "type": "object"
-      },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
         "properties": {
@@ -18362,6 +18365,72 @@
         ]
       }
     },
+    "/v2/project-backups/{projectBackupId}/database-dumps": {
+      "get": {
+        "operationId": "backup-get-project-backup-database-dumps-v2-experimental",
+        "parameters": [
+          {
+            "description": "UUID of the Project Backup to get the database dump's for.",
+            "in": "path",
+            "name": "projectBackupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "databases": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "required": [
+                    "databases"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "502": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "503": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "List database dump's for a ProjectBackup.",
+        "tags": [
+          "Backup"
+        ]
+      }
+    },
     "/v2/project-backups/{projectBackupId}/path": {
       "get": {
         "operationId": "backup-get-project-backup-directories",
@@ -18421,6 +18490,116 @@
           }
         ],
         "summary": "List paths for a ProjectBackup.",
+        "tags": [
+          "Backup"
+        ]
+      }
+    },
+    "/v2/project-backups/{projectBackupId}/restore-path": {
+      "post": {
+        "operationId": "backup-request-project-backup-restore-path-deprecated",
+        "deprecated": true,
+        "description": "**Deprecated**: Use POST /v2/project-backups/{projectBackupId}/restore instead.\nThis endpoint will be removed in a future version.\n",
+        "parameters": [
+          {
+            "description": "ID of the ProjectBackup to restore the path.",
+            "in": "path",
+            "name": "projectBackupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePathRequestDeprecated"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Restore a ProjectBackup's path.",
+        "tags": [
+          "Backup"
+        ]
+      }
+    },
+    "/v2/project-backups/{projectBackupId}/restore": {
+      "post": {
+        "operationId": "backup-request-project-backup-restore-v2-experimental",
+        "parameters": [
+          {
+            "description": "ID of the ProjectBackup to restore.",
+            "in": "path",
+            "name": "projectBackupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "404": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Restore a ProjectBackup.",
         "tags": [
           "Backup"
         ]
@@ -24545,6 +24724,201 @@
           }
         ],
         "summary": "Get a CronjobExecution.",
+        "tags": [
+          "Cronjob"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/app-installation-id": {
+      "put": {
+        "operationId": "cronjob-replace-cronjob-app-installation-id",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appInstallationId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the AppInstallation to set.",
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
+        ]
+      },
+      "patch": {
+        "operationId": "cronjob-update-cronjob-app-id-deprecated",
+        "deprecated": true,
+        "description": "Deprecated by PUT /v2/cronjobs/{cronjobId}/app-installation-id.",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the app to set.",
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "429": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
+          },
+          "default": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
+        "tags": [
+          "Cronjob"
+        ]
+      }
+    },
+    "/v2/cronjobs/{cronjobId}/app-id": {
+      "patch": {
+        "deprecated": true,
+        "description": "This route is deprecated. Please use /v2/cronjobs/{cronjobId}/app-installation-id instead.",
+        "parameters": [
+          {
+            "description": "ID of the Cronjob to update.",
+            "in": "path",
+            "name": "cronjobId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "appId": {
+                    "deprecated": true,
+                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  "appInstallationId": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "appId"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "description": "ID of the app to set.",
+          "required": true
+        },
+        "responses": {
+          "308": {
+            "description": "This route is deprecated, and will redirect you to another URL.",
+            "headers": {
+              "location": {
+                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "de.mittwald.v1.commons.AccessToken": []
+          }
+        ],
+        "summary": "Update a Cronjob's app installation id.",
         "tags": [
           "Cronjob"
         ]
@@ -58145,377 +58519,6 @@
         "summary": "Check if a company exists.",
         "tags": [
           "Misc"
-        ]
-      }
-    },
-    "/v2/cronjobs/{cronjobId}/app-id": {
-      "patch": {
-        "deprecated": true,
-        "description": "This route is deprecated. Please use /v2/cronjobs/{cronjobId}/app-installation-id instead.",
-        "parameters": [
-          {
-            "description": "ID of the Cronjob to update.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "appId": {
-                    "deprecated": true,
-                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
-                    "format": "uuid",
-                    "type": "string"
-                  },
-                  "appInstallationId": {
-                    "format": "uuid",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "appId"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "ID of the app to set.",
-          "required": true
-        },
-        "responses": {
-          "308": {
-            "description": "This route is deprecated, and will redirect you to another URL.",
-            "headers": {
-              "location": {
-                "description": "The new URL to use; clients should redirect their request to this URL, using the same request method and body as the original request.",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Cronjob's app installation id.",
-        "tags": [
-          "Cronjob"
-        ]
-      }
-    },
-    "/v2/cronjobs/{cronjobId}/app-installation-id": {
-      "patch": {
-        "operationId": "cronjob-update-cronjob-app-id-deprecated",
-        "deprecated": true,
-        "description": "Deprecated by PUT /v2/cronjobs/{cronjobId}/app-installation-id.",
-        "parameters": [
-          {
-            "description": "ID of the Cronjob to update.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "appId": {
-                    "deprecated": true,
-                    "description": "DEPRECATED: Use 'appInstallationId' instead. This field will be removed in a future version.",
-                    "format": "uuid",
-                    "type": "string"
-                  },
-                  "appInstallationId": {
-                    "format": "uuid",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "appId"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "ID of the app to set.",
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Cronjob's app installation id.",
-        "tags": [
-          "Cronjob"
-        ]
-      },
-      "put": {
-        "operationId": "cronjob-replace-cronjob-app-installation-id",
-        "parameters": [
-          {
-            "description": "ID of the Cronjob to update.",
-            "in": "path",
-            "name": "cronjobId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "appInstallationId": {
-                    "format": "uuid",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "appInstallationId"
-                ],
-                "type": "object"
-              }
-            }
-          },
-          "description": "ID of the AppInstallation to set.",
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "412": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Update a Cronjob's app installation id.",
-        "tags": [
-          "Cronjob"
-        ]
-      }
-    },
-    "/v2/project-backups/{projectBackupId}/database-dumps": {
-      "get": {
-        "operationId": "backup-get-project-backup-database-dumps-v2-experimental",
-        "parameters": [
-          {
-            "description": "UUID of the Project Backup to get the database dump's for.",
-            "in": "path",
-            "name": "projectBackupId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "databases": {
-                      "items": {
-                        "type": "string"
-                      },
-                      "type": "array"
-                    }
-                  },
-                  "required": [
-                    "databases"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "OK"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "502": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "503": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "List database dump's for a ProjectBackup.",
-        "tags": [
-          "Backup"
-        ]
-      }
-    },
-    "/v2/project-backups/{projectBackupId}/restore-path": {
-      "post": {
-        "operationId": "backup-request-project-backup-restore-path-deprecated",
-        "deprecated": true,
-        "description": "**Deprecated**: Use POST /v2/project-backups/{projectBackupId}/restore instead.\nThis endpoint will be removed in a future version.\n",
-        "parameters": [
-          {
-            "description": "ID of the ProjectBackup to restore the path.",
-            "in": "path",
-            "name": "projectBackupId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestorePathRequestDeprecated"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Restore a ProjectBackup's path.",
-        "tags": [
-          "Backup"
-        ]
-      }
-    },
-    "/v2/project-backups/{projectBackupId}/restore": {
-      "post": {
-        "operationId": "backup-request-project-backup-restore-v2-experimental",
-        "parameters": [
-          {
-            "description": "ID of the ProjectBackup to restore.",
-            "in": "path",
-            "name": "projectBackupId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/de.mittwald.v1.backup.ProjectBackupRestoreRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
-          },
-          "403": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          },
-          "404": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
-          },
-          "429": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "default": {
-            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
-          }
-        },
-        "security": [
-          {
-            "de.mittwald.v1.commons.AccessToken": []
-          }
-        ],
-        "summary": "Restore a ProjectBackup.",
-        "tags": [
-          "Backup"
         ]
       }
     }
