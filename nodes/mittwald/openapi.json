@@ -29032,24 +29032,6 @@
             }
           },
           {
-            "in": "query",
-            "name": "page",
-            "required": false,
-            "schema": {
-              "minimum": 1,
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "required": false,
-            "schema": {
-              "minimum": 1,
-              "type": "integer"
-            }
-          },
-          {
             "description": "Search for domain names in this list. Input will be handled like '%YourInput%'.",
             "in": "query",
             "name": "domainSearchName",
@@ -29066,6 +29048,37 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max count of resources to return in the list response.",
+            "schema": {
+              "type": "integer",
+              "default": 10000,
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of items to skip. Should be multiple of `limit`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page to display. `skip` and `page` end up doing the same. If both `page` and `skip` are set, skip is used.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
           }
         ],
         "responses": {
@@ -29080,7 +29093,33 @@
                 }
               }
             },
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "X-Pagination-Limit": {
+                "description": "The limit used to select the resources for the response",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Skip": {
+                "description": "The number of skipped items",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Pagination-Page": {
+                "description": "The calculate page of the list response. Refer to parameters to learn more.",
+                "schema": {
+                  "type": "number"
+                }
+              },
+              "X-Pagination-TotalCount": {
+                "description": "The total amount of items available in the remote ressource. Use this value in combination with the limit to calculate the available pages.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
@@ -55275,7 +55314,7 @@
             "de.mittwald.v1.commons.AccessToken": []
           }
         ],
-        "summary": "Store a new ApiToken.",
+        "summary": "Create a new ApiToken.",
         "tags": [
           "User"
         ],
@@ -55420,7 +55459,7 @@
             "de.mittwald.v1.commons.AccessToken": []
           }
         ],
-        "summary": "Store a new ApiToken.",
+        "summary": "Create a new ApiToken.",
         "tags": [
           "User"
         ]
