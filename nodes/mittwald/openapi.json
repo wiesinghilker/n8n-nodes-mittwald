@@ -9973,7 +9973,7 @@
       "de.mittwald.v1.membership.CustomerInvite": {
         "properties": {
           "avatarRefId": {
-            "description": "Reference to the Project's avatar.",
+            "description": "Reference to the Customer's avatar.",
             "format": "uuid",
             "type": "string"
           },
@@ -10110,11 +10110,6 @@
           },
           "invitedBy": {
             "description": "ID of the user that created the invite.",
-            "format": "uuid",
-            "type": "string"
-          },
-          "userId": {
-            "description": "ID of the user this invite is for.",
             "format": "uuid",
             "type": "string"
           }
@@ -12443,6 +12438,17 @@
           "contact": {
             "$ref": "#/components/schemas/de.mittwald.v1.ssl.Contact"
           },
+          "dnsCertSpec": {
+            "properties": {
+              "cnameTarget": {
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/components/schemas/de.mittwald.v1.ssl.DNSCertStatus"
+              }
+            },
+            "type": "object"
+          },
           "dnsNames": {
             "items": {
               "type": "string"
@@ -12479,12 +12485,7 @@
           "id",
           "certificateType",
           "certificateRequestId",
-          "projectId",
-          "validFrom",
-          "validTo",
-          "certificate",
-          "isExpired",
-          "lastExpirationThresholdHit"
+          "projectId"
         ],
         "type": "object"
       },
@@ -12698,6 +12699,7 @@
         "type": "object"
       },
       "de.mittwald.v1.ssl.CertificateRequestCreateRequest": {
+        "additionalProperties": false,
         "properties": {
           "certificate": {
             "type": "string"
@@ -12751,12 +12753,12 @@
           }
         },
         "required": [
-          "id",
-          "contact"
+          "id"
         ],
         "type": "object"
       },
       "de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest": {
+        "additionalProperties": false,
         "properties": {
           "commonName": {
             "type": "string"
@@ -12780,7 +12782,8 @@
         "enum": [
           0,
           1,
-          2
+          2,
+          3
         ],
         "type": "integer"
       },
@@ -13849,6 +13852,82 @@
           "storageDesc"
         ],
         "type": "string"
+      },
+      "de.mittwald.v1.ssl.CertificateRequestCreateWithDNSRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "commonName": {
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "commonName"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.DNSCertStatus": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.ProjectCertificateStatus"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.ProjectCertificateStatus": {
+        "enum": [
+          "issuing",
+          "ready",
+          "cnameError",
+          "error",
+          "unspecified"
+        ],
+        "type": "string"
+      },
+      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateRequest": {
+        "properties": {
+          "certificate": {
+            "description": "PEM-encoded certificate. Linebreaks have to be escaped with \n.",
+            "type": "string"
+          },
+          "projectId": {
+            "description": "The projects UUID.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "certificate"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateIDRequest": {
+        "properties": {
+          "certificateId": {
+            "description": "The certificates UUID.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "certificateId"
+        ],
+        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
@@ -27233,6 +27312,7 @@
       },
       "get": {
         "operationId": "database-get-mysql-database",
+        "description": "Returns a MySQLDatabase resource and its current status. Note that establishing a connection requires the linked user to have a status of ready; relying solely on the database status is insufficient.\n",
         "parameters": [
           {
             "description": "ID of the MySQLDatabase to be retrieved.",
@@ -40602,22 +40682,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "certificate": {
-                    "description": "PEM-encoded certificate. Linebreaks have to be escaped with \n.",
-                    "type": "string"
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateRequest"
                   },
-                  "projectId": {
-                    "description": "The projects UUID.",
-                    "format": "uuid",
-                    "type": "string"
+                  {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateIDRequest"
                   }
-                },
-                "required": [
-                  "projectId",
-                  "certificate"
-                ],
-                "type": "object"
+                ]
               }
             }
           },
@@ -53341,6 +53413,9 @@
                   },
                   {
                     "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateWithCSRRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/de.mittwald.v1.ssl.CertificateRequestCreateWithDNSRequest"
                   }
                 ]
               }
@@ -53364,6 +53439,12 @@
           },
           "404": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
+          },
+          "409": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
+          "412": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
