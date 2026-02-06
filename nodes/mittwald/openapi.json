@@ -7613,6 +7613,37 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateIDRequest": {
+        "properties": {
+          "certificateId": {
+            "description": "The certificates UUID.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "certificateId"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateRequest": {
+        "properties": {
+          "certificate": {
+            "description": "PEM-encoded certificate. Linebreaks have to be escaped with \n.",
+            "type": "string"
+          },
+          "projectId": {
+            "description": "The projects UUID.",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "certificate"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.ingress.Ownership": {
         "properties": {
           "txtRecord": {
@@ -12778,6 +12809,23 @@
         ],
         "type": "object"
       },
+      "de.mittwald.v1.ssl.CertificateRequestCreateWithDNSRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "commonName": {
+            "type": "string"
+          },
+          "projectId": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "projectId",
+          "commonName"
+        ],
+        "type": "object"
+      },
       "de.mittwald.v1.ssl.CertificateType": {
         "enum": [
           0,
@@ -12909,6 +12957,34 @@
           }
         },
         "type": "object"
+      },
+      "de.mittwald.v1.ssl.DNSCertStatus": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/de.mittwald.v1.ssl.ProjectCertificateStatus"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "type": "object"
+      },
+      "de.mittwald.v1.ssl.ProjectCertificateStatus": {
+        "enum": [
+          "issuing",
+          "ready",
+          "cnameError",
+          "error",
+          "unspecified"
+        ],
+        "type": "string"
       },
       "de.mittwald.v1.storagespace.StatisticsCategoryKind": {
         "enum": [
@@ -13852,82 +13928,6 @@
           "storageDesc"
         ],
         "type": "string"
-      },
-      "de.mittwald.v1.ssl.CertificateRequestCreateWithDNSRequest": {
-        "additionalProperties": false,
-        "properties": {
-          "commonName": {
-            "type": "string"
-          },
-          "projectId": {
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "commonName"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.DNSCertStatus": {
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/de.mittwald.v1.ssl.ProjectCertificateStatus"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "status"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ssl.ProjectCertificateStatus": {
-        "enum": [
-          "issuing",
-          "ready",
-          "cnameError",
-          "error",
-          "unspecified"
-        ],
-        "type": "string"
-      },
-      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateRequest": {
-        "properties": {
-          "certificate": {
-            "description": "PEM-encoded certificate. Linebreaks have to be escaped with \n.",
-            "type": "string"
-          },
-          "projectId": {
-            "description": "The projects UUID.",
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "projectId",
-          "certificate"
-        ],
-        "type": "object"
-      },
-      "de.mittwald.v1.ingress.ListIngressesCompatibleWithCertificateIDRequest": {
-        "properties": {
-          "certificateId": {
-            "description": "The certificates UUID.",
-            "format": "uuid",
-            "type": "string"
-          }
-        },
-        "required": [
-          "certificateId"
-        ],
-        "type": "object"
       },
       "de.mittwald.v1.commons.Address": {
         "type": "object",
