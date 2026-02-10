@@ -12022,7 +12022,8 @@
           "pending",
           "ready",
           "unready",
-          "suspended"
+          "suspended",
+          "migrating"
         ],
         "type": "string"
       },
@@ -58546,12 +58547,16 @@
               "application/json": {
                 "schema": {
                   "properties": {
+                    "confidence": {
+                      "type": "string"
+                    },
                     "exists": {
                       "type": "boolean"
                     }
                   },
                   "required": [
-                    "exists"
+                    "exists",
+                    "confidence"
                   ],
                   "type": "object"
                 }
