@@ -58547,16 +58547,12 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "confidence": {
-                      "type": "string"
-                    },
                     "exists": {
                       "type": "boolean"
                     }
                   },
                   "required": [
-                    "exists",
-                    "confidence"
+                    "exists"
                   ],
                   "type": "object"
                 }
