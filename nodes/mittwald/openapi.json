@@ -310,41 +310,6 @@
         },
         "description": "No valid access token was provided"
       },
-      "de.mittwald.v1.signup.RemovingLastOwnerNotAllowedError": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "properties": {
-                "info": {
-                  "description": "A json object, given further information about the error",
-                  "example": {
-                    "customerId": "xyz"
-                  },
-                  "type": "object"
-                },
-                "message": {
-                  "description": "more information about the error",
-                  "example": "The user cannot be removed because it is the last owner of the customer with the id 'xyz'",
-                  "type": "string"
-                },
-                "name": {
-                  "enum": [
-                    "RemovingLastOwnerNotAllowedError"
-                  ],
-                  "example": "RemovingLastOwnerNotAllowedError",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name",
-                "message"
-              ],
-              "type": "object"
-            }
-          }
-        },
-        "description": "Deleting the last owner of a customer is not allowed"
-      },
       "de.mittwald.v1.signup.SecondFactorRequiredError": {
         "content": {
           "application/json": {
@@ -54457,7 +54422,7 @@
                 }
               }
             },
-            "description": "Your authentication request was successfull and you've got an access token."
+            "description": "Your authentication request was successful and you've got an access token."
           },
           "202": {
             "content": {
@@ -56323,7 +56288,7 @@
             "description": "Some of the specified values does not meet our requirements.\nPossible domain specific `type` values are:\n           * WrongPassword\n           * MfaCodeNotValid\n"
           },
           "409": {
-            "$ref": "#/components/responses/de.mittwald.v1.signup.RemovingLastOwnerNotAllowedError"
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
@@ -58560,11 +58525,11 @@
             },
             "description": "Success"
           },
+          "400": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
+          },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "default": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
@@ -58624,9 +58589,6 @@
           },
           "429": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.RateLimitError"
-          },
-          "500": {
-            "description": "Internal Server Error"
           },
           "default": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
