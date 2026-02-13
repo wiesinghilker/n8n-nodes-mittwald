@@ -823,6 +823,10 @@
           "installationPath": {
             "type": "string"
           },
+          "lastError": {
+            "description": "The last error that occurred during an update. Resets on success.",
+            "type": "string"
+          },
           "linkedDatabases": {
             "items": {
               "$ref": "#/components/schemas/de.mittwald.v1.app.LinkedDatabase"
