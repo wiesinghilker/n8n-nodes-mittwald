@@ -4616,6 +4616,7 @@
             "$ref": "#/components/schemas/de.mittwald.v1.database.characterSettings"
           },
           "description": {
+            "description": "A description of the MySQLDatabase. This is for your own reference and has no effect on the database itself.\n",
             "type": "string"
           },
           "projectId": {
@@ -4623,6 +4624,8 @@
             "type": "string"
           },
           "version": {
+            "description": "The MySQL version to use for this database, in `<major>.<minor>` format. Use the `GET /v2/mysql-versions` endpoint to query available versions.\n",
+            "example": "8.4",
             "type": "string"
           }
         },
@@ -4636,9 +4639,12 @@
       "de.mittwald.v1.database.CreateMySqlUser": {
         "properties": {
           "accessIpMask": {
+            "description": "An IP range (in CIDR notation) for which access should be allowed.",
+            "example": "203.0.113.123/32",
             "type": "string"
           },
           "accessLevel": {
+            "description": "The access level that this MySQLUser should have for the database. The `full` access level grants the user read/write privileges on the database.\n",
             "enum": [
               "full",
               "readonly"
@@ -4653,6 +4659,7 @@
             "type": "string"
           },
           "externalAccess": {
+            "description": "Describes if users should be able to connection to this database from external\nsources. Defaults to `false` when not set.\n\nTo find out how to connect to your database from external sources, refer to the `externalHostname` field of the `GET /v2/mysql-databases/{id}` endpoint.\n",
             "type": "boolean"
           },
           "password": {
@@ -4673,12 +4680,14 @@
             "type": "string"
           },
           "accessLevel": {
+            "description": "The access level that this MySQLUser should have for the database. The `full` access level grants the user read/write privileges on the database.\n\nFor MySQLUsers that are created in the same step as the database itself, `full` is the only available option.\n",
             "enum": [
               "full"
             ],
             "type": "string"
           },
           "externalAccess": {
+            "description": "Describes if users should be able to connection to this database from external\nsources. Defaults to `false` when not set.\n\nTo find out how to connect to your database from external sources, refer to the `externalHostname` field of the `GET /v2/mysql-databases/{id}` endpoint.\n",
             "type": "boolean"
           },
           "password": {
@@ -4743,9 +4752,13 @@
       "de.mittwald.v1.database.characterSettings": {
         "properties": {
           "characterSet": {
+            "description": "A valid MySQL character set. Refer to https://dev.mysql.com/doc/refman/8.4/en/charset-mysql.html for more information and available character sets.\n",
+            "example": "utf8mb4",
             "type": "string"
           },
           "collation": {
+            "description": "A valid MySQL collation. Refer to https://dev.mysql.com/doc/refman/8.4/en/charset-mysql.html for more information and available collations.\n",
+            "example": "utf8mb4_general_ci",
             "type": "string"
           }
         },
@@ -4765,9 +4778,12 @@
             "type": "string"
           },
           "description": {
+            "description": "A description of the MySQLDatabase. This is for your own reference and has no effect on the database itself.\n",
             "type": "string"
           },
           "externalHostname": {
+            "description": "The hostname that you can use to connect to this MySQLDatabase from external sources, like your local machine or services running outside the mittwald cloud platform.\n\nNote that you still need a database user with `externalAccess` enabled to connect via this hostname.\n",
+            "example": "mysql.example-cluster.project.host",
             "type": "string"
           },
           "finalizers": {
@@ -4779,6 +4795,8 @@
             "uniqueItems": true
           },
           "hostname": {
+            "description": "The hostname that you can use to connect to this MySQLDatabase from _within_ the hosting environment.\n",
+            "example": "mysql-XXXXXX.pg-YYYYYY.db.project.host",
             "type": "string"
           },
           "id": {
@@ -4795,6 +4813,7 @@
             "$ref": "#/components/schemas/de.mittwald.v1.database.MySqlUser"
           },
           "name": {
+            "description": "The name of the MySQLDatabase. This is also the name of the database that you can use when connecting to it. It is automatically generated and cannot be changed.\n",
             "type": "string"
           },
           "projectId": {
@@ -4821,6 +4840,8 @@
             "type": "string"
           },
           "version": {
+            "description": "The MySQL version that this database is running, in `<major>.<minor>` format. Use the `GET /v2/mysql-versions` endpoint to query available versions.\n",
+            "example": "8.4",
             "type": "string"
           }
         },
@@ -22348,6 +22369,9 @@
           "400": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.ValidationError"
           },
+          "403": {
+            "$ref": "#/components/responses/de.mittwald.v1.commons.DefaultError"
+          },
           "404": {
             "$ref": "#/components/responses/de.mittwald.v1.commons.NotFoundError"
           },
@@ -26844,6 +26868,7 @@
     "/v2/projects/{projectId}/mysql-databases": {
       "post": {
         "operationId": "database-create-mysql-database",
+        "description": "This operation creates a MySQLDatabase and an associated MySQLUser.\n\nPlease note that this operation is asynchronous. Even after a successful response, you will still need to wait until the database is successfully provisioned. Currently, the recommended way for that is to poll the `GET /v2/mysql-databases/{id}` endpoint and observe the `mainUser.status` field in the response.\n",
         "parameters": [
           {
             "description": "ID of the Project to create a MySQLDatabase for.",
@@ -27282,7 +27307,7 @@
       },
       "get": {
         "operationId": "database-get-mysql-database",
-        "description": "Returns a MySQLDatabase resource and its current status. Note that establishing a connection requires the linked user to have a status of ready; relying solely on the database status is insufficient.\n",
+        "description": "Returns a MySQLDatabase resource and its current status.\n\nNote that establishing a connection requires the linked user to have a status of `ready`; relying solely on the database status is insufficient.\n",
         "parameters": [
           {
             "description": "ID of the MySQLDatabase to be retrieved.",
